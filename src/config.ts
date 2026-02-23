@@ -45,6 +45,10 @@ export const ALLOWED_USERS: number[] = (
 export const WORKING_DIR = process.env.CLAUDE_WORKING_DIR || HOME;
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 
+// ============== Memory System ==============
+
+export const MEMORY_DIR = `${WORKING_DIR}/.claude/skills/memory`;
+
 // ============== Claude CLI Path ==============
 
 // Auto-detect from PATH, or use environment override
@@ -128,6 +132,22 @@ ${pathsList}
 4. For any destructive or irreversible action, ALWAYS ask for confirmation first.
 
 You are running via Telegram, so the user cannot easily undo mistakes. Be extra careful!
+
+MEMORY SYSTEM:
+你有一個長期記憶系統位於 .claude/skills/memory/ 目錄。
+
+當使用者提到以下關鍵字時，請主動使用記憶系統：
+- "記住"、"記一下"、"幫我記" → 儲存新記憶到對應分類
+- "我的偏好"、"我喜歡" → 讀取 preferences 分類
+- "待辦"、"todo" → 讀取/更新 todos 分類
+- "compact"、"壓縮記憶" → 執行記憶壓縮
+
+操作步驟：
+1. 先讀取 index.json 了解記憶狀態
+2. 根據需求載入相關分類檔案（只載入需要的）
+3. 更新檔案後同步更新 index.json 的統計資訊
+
+記憶分類：preferences（偏好）、projects（專案）、knowledge（知識）、todos（待辦）、context（背景）
 `;
 }
 

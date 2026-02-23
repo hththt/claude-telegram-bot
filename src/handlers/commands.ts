@@ -6,8 +6,9 @@
 
 import type { Context } from "grammy";
 import { session } from "../session";
-import { WORKING_DIR, ALLOWED_USERS, RESTART_FILE } from "../config";
+import { WORKING_DIR, ALLOWED_USERS, RESTART_FILE, MEMORY_DIR } from "../config";
 import { isAuthorized } from "../security";
+import { existsSync, readFileSync } from "fs";
 
 /**
  * /start - Show welcome message and status.
@@ -34,10 +35,13 @@ export async function handleStart(ctx: Context): Promise<void> {
       `/status - 顯示詳細狀態\n` +
       `/resume - 恢復上次對話\n` +
       `/retry - 重試上則訊息\n` +
+      `/memory - 查看記憶狀態\n` +
+      `/compact - 壓縮記憶\n` +
       `/restart - 重新啟動機器人\n\n` +
       `<b>提示：</b>\n` +
       `• 使用 <code>!</code> 前綴可中斷目前查詢\n` +
       `• 使用「think」關鍵字啟用延伸推理\n` +
+      `• 說「記住...」讓我記住事情\n` +
       `• 可發送照片、語音或文件`,
     { parse_mode: "HTML" }
   );
@@ -295,6 +299,107 @@ export async function handleRetry(ctx: Context): Promise<void> {
     message: {
       ...ctx.message,
       text: message,
+    },
+  } as Context;
+
+  await handleText(fakeCtx);
+}
+
+/**
+ * /memory - Show memory system summary.
+ */
+export async function handleMemory(ctx: Context): Promise<void> {
+  const userId = ctx.from?.id;
+
+  if (!isAuthorized(userId, ALLOWED_USERS)) {
+    await ctx.reply("未授權。");
+    return;
+  }
+
+  const indexPath = `${MEMORY_DIR}/index.json`;
+
+  if (!existsSync(indexPath)) {
+    await ctx.reply("❌ 記憶系統尚未初始化。");
+    return;
+  }
+
+  try {
+    const indexData = JSON.parse(readFileSync(indexPath, "utf-8"));
+    const lines: string[] = ["🧠 <b>記憶系統狀態</b>\n"];
+
+    // Total entries
+    lines.push(`📊 總記憶數：${indexData.total_entries || 0}`);
+
+    // Last updated
+    if (indexData.last_updated) {
+      const date = new Date(indexData.last_updated);
+      lines.push(`⏱️ 最後更新：${date.toLocaleString("zh-TW")}`);
+    }
+
+    // Last compact
+    if (indexData.last_compact) {
+      const date = new Date(indexData.last_compact);
+      lines.push(`🗜️ 最後壓縮：${date.toLocaleString("zh-TW")}`);
+    }
+
+    // Categories
+    lines.push("\n<b>分類統計：</b>");
+    const categories = indexData.categories || {};
+    for (const [name, info] of Object.entries(categories)) {
+      const catInfo = info as { count: number; keywords?: string[] };
+      const count = catInfo.count || 0;
+      const keywords = catInfo.keywords?.slice(0, 3).join(", ") || "";
+      const keywordDisplay = keywords ? ` (${keywords})` : "";
+      lines.push(`• ${name}：${count} 項${keywordDisplay}`);
+    }
+
+    // Suggestions
+    const totalEntries = indexData.total_entries || 0;
+    if (totalEntries > 80) {
+      lines.push("\n⚠️ 記憶數量較多，建議執行 /compact 壓縮記憶。");
+    }
+
+    await ctx.reply(lines.join("\n"), { parse_mode: "HTML" });
+  } catch (e) {
+    console.error("Failed to read memory index:", e);
+    await ctx.reply("❌ 讀取記憶索引失敗。");
+  }
+}
+
+/**
+ * /compact - Trigger memory compaction via Claude.
+ */
+export async function handleCompact(ctx: Context): Promise<void> {
+  const userId = ctx.from?.id;
+
+  if (!isAuthorized(userId, ALLOWED_USERS)) {
+    await ctx.reply("未授權。");
+    return;
+  }
+
+  const indexPath = `${MEMORY_DIR}/index.json`;
+
+  if (!existsSync(indexPath)) {
+    await ctx.reply("❌ 記憶系統尚未初始化。");
+    return;
+  }
+
+  // Check if something is already running
+  if (session.isRunning) {
+    await ctx.reply("⏳ 查詢正在執行中。請先使用 /stop 停止。");
+    return;
+  }
+
+  await ctx.reply("🗜️ 開始壓縮記憶...");
+
+  // Send compact command to Claude
+  const { handleText } = await import("./text");
+
+  const fakeCtx = {
+    ...ctx,
+    message: {
+      ...ctx.message,
+      text: "請執行記憶壓縮（compact）：讀取所有記憶分類，提取核心資訊，移除過時或重複內容，將歷史摘要存入 archives/compact_YYYY-MM.md，然後精簡各分類檔案，最後更新 index.json。",
     },
   } as Context;
 

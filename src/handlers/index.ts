@@ -10,6 +10,8 @@ export {
   handleResume,
   handleRestart,
   handleRetry,
+  handleMemory,
+  handleCompact,
 } from "./commands";
 export { handleText } from "./text";
 export { handleVoice } from "./voice";
