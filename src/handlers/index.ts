@@ -12,6 +12,8 @@ export {
   handleRetry,
   handleMemory,
   handleCompact,
+  handleRemember,
+  handleRecall,
 } from "./commands";
 export { handleText } from "./text";
 export { handleVoice } from "./voice";

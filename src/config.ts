@@ -48,6 +48,21 @@ export const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 // ============== Memory System ==============
 
 export const MEMORY_DIR = `${WORKING_DIR}/.claude/skills/memory`;
+const MEMORY_SKILL_PATH = `${MEMORY_DIR}/SKILL.md`;
+
+// Load Memory SKILL.md content
+function loadMemorySkill(): string {
+  try {
+    const file = Bun.file(MEMORY_SKILL_PATH);
+    // Use sync check since we're at module level
+    const content = require("fs").readFileSync(MEMORY_SKILL_PATH, "utf-8");
+    return content;
+  } catch {
+    return "";
+  }
+}
+
+export const MEMORY_SKILL = loadMemorySkill();
 
 // ============== Claude CLI Path ==============
 
@@ -136,6 +151,11 @@ You are running via Telegram, so the user cannot easily undo mistakes. Be extra 
 }
 
 export const SAFETY_PROMPT = buildSafetyPrompt(ALLOWED_PATHS);
+
+// Combined system prompt with memory skill
+export const SYSTEM_PROMPT = MEMORY_SKILL
+  ? `${SAFETY_PROMPT}\n\n${MEMORY_SKILL}`
+  : SAFETY_PROMPT;
 
 // Dangerous command patterns to block
 export const BLOCKED_PATTERNS = [

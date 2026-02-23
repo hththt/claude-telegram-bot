@@ -35,13 +35,15 @@ export async function handleStart(ctx: Context): Promise<void> {
       `/status - 顯示詳細狀態\n` +
       `/resume - 恢復上次對話\n` +
       `/retry - 重試上則訊息\n` +
+      `/remember - 儲存記憶\n` +
+      `/recall - 讀取記憶\n` +
       `/memory - 查看記憶狀態\n` +
       `/compact - 壓縮記憶\n` +
       `/restart - 重新啟動機器人\n\n` +
       `<b>提示：</b>\n` +
       `• 使用 <code>!</code> 前綴可中斷目前查詢\n` +
       `• 使用「think」關鍵字啟用延伸推理\n` +
-      `• 說「記住...」讓我記住事情\n` +
+      `• 說「記住...」也可儲存記憶\n` +
       `• 可發送照片、語音或文件`,
     { parse_mode: "HTML" }
   );
@@ -400,6 +402,94 @@ export async function handleCompact(ctx: Context): Promise<void> {
     message: {
       ...ctx.message,
       text: "請執行記憶壓縮（compact）：讀取所有記憶分類，提取核心資訊，移除過時或重複內容，將歷史摘要存入 archives/compact_YYYY-MM.md，然後精簡各分類檔案，最後更新 index.json。",
+    },
+  } as Context;
+
+  await handleText(fakeCtx);
+}
+
+/**
+ * /remember <content> - Store a memory via Claude.
+ */
+export async function handleRemember(ctx: Context): Promise<void> {
+  const userId = ctx.from?.id;
+
+  if (!isAuthorized(userId, ALLOWED_USERS)) {
+    await ctx.reply("未授權。");
+    return;
+  }
+
+  const text = ctx.message?.text || "";
+  const content = text.replace(/^\/remember\s*/i, "").trim();
+
+  if (!content) {
+    await ctx.reply(
+      "📝 <b>記憶指令</b>\n\n" +
+        "用法：<code>/remember [內容]</code>\n\n" +
+        "範例：\n" +
+        "• <code>/remember 我喜歡用繁體中文</code>\n" +
+        "• <code>/remember 專案 claude-telegram-bot 使用 Bun 和 TypeScript</code>\n" +
+        "• <code>/remember 待辦：完成記憶系統測試</code>",
+      { parse_mode: "HTML" }
+    );
+    return;
+  }
+
+  // Check if something is already running
+  if (session.isRunning) {
+    await ctx.reply("⏳ 查詢正在執行中。請先使用 /stop 停止。");
+    return;
+  }
+
+  // Send remember command to Claude
+  const { handleText } = await import("./text");
+
+  const fakeCtx = {
+    ...ctx,
+    message: {
+      ...ctx.message,
+      text: `記住以下內容，存入適當的記憶分類：${content}`,
+    },
+  } as Context;
+
+  await handleText(fakeCtx);
+}
+
+/**
+ * /recall [category] - Recall memories via Claude.
+ */
+export async function handleRecall(ctx: Context): Promise<void> {
+  const userId = ctx.from?.id;
+
+  if (!isAuthorized(userId, ALLOWED_USERS)) {
+    await ctx.reply("未授權。");
+    return;
+  }
+
+  const text = ctx.message?.text || "";
+  const category = text.replace(/^\/recall\s*/i, "").trim();
+
+  // Check if something is already running
+  if (session.isRunning) {
+    await ctx.reply("⏳ 查詢正在執行中。請先使用 /stop 停止。");
+    return;
+  }
+
+  // Send recall command to Claude
+  const { handleText } = await import("./text");
+
+  let prompt: string;
+  if (category) {
+    prompt = `讀取記憶系統中關於「${category}」的內容，列出相關記憶。`;
+  } else {
+    prompt = "讀取記憶系統，列出所有分類的記憶摘要。";
+  }
+
+  const fakeCtx = {
+    ...ctx,
+    message: {
+      ...ctx.message,
+      text: prompt,
     },
   } as Context;
 

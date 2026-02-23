@@ -18,6 +18,8 @@ import {
   handleRetry,
   handleMemory,
   handleCompact,
+  handleRemember,
+  handleRecall,
   handleText,
   handleVoice,
   handlePhoto,
@@ -62,6 +64,8 @@ bot.command("restart", handleRestart);
 bot.command("retry", handleRetry);
 bot.command("memory", handleMemory);
 bot.command("compact", handleCompact);
+bot.command("remember", handleRemember);
+bot.command("recall", handleRecall);
 
 // ============== Message Handlers ==============
 
