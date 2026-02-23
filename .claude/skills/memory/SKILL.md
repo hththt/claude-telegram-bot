@@ -1,79 +1,57 @@
 ---
 name: memory
 description: |
-  長期記憶系統。漸進式揭露：
-  第一層："偏好"、"專案"、"知識"、"待辦"
-  第二層：各分類子目錄內的 .md 檔案名稱
-  寫入："記住"、"記一下"、"幫我記"
+  Long-term memory system for storing and retrieving user preferences,
+  project knowledge, learning notes, and todos. Use when user mentions
+  "記住", "記一下", "幫我記", "偏好", "專案", "知識", "待辦",
+  or asks about previously stored information.
 allowed-tools: Read, Write, Edit, Grep, Glob
 ---
 
-# Memory Skill
+# Memory System
 
-長期記憶系統，使用目錄結構實現漸進式揭露。
+長期記憶系統，用於儲存和檢索使用者資訊。
 
-## 目錄結構
+## Categories
 
-```
-memory/
-├── SKILL.md              # 本檔案（第一層入口）
-├── index.json            # 記憶索引
-├── categories/
-│   ├── preferences/      # 偏好分類
-│   │   ├── SKILL.md      # 第一層：分類說明
-│   │   └── {項目}.md     # 第二層：具體偏好
-│   ├── projects/         # 專案分類
-│   │   ├── SKILL.md
-│   │   └── {專案名}.md   # 第二層：各專案知識
-│   ├── knowledge/        # 知識分類
-│   │   ├── SKILL.md
-│   │   └── {主題}.md     # 第二層：各知識主題
-│   └── todos/            # 待辦分類
-│       ├── SKILL.md
-│       └── {類別}.md     # 第二層：各類待辦
-└── archives/
-    └── compact_YYYY-MM.md
-```
+| Category | Path | Description |
+|----------|------|-------------|
+| preferences | [categories/preferences/](categories/preferences/) | 使用者偏好設定 |
+| projects | [categories/projects/](categories/projects/) | 專案相關知識 |
+| knowledge | [categories/knowledge/](categories/knowledge/) | 學習的知識筆記 |
+| todos | [categories/todos/](categories/todos/) | 待辦事項 |
 
-## 漸進式揭露機制
+## Reading Memory
 
-### 第一層觸發（分類）
-使用者提到分類關鍵字時，載入該分類的 SKILL.md：
-- 「偏好」→ categories/preferences/SKILL.md
-- 「專案」→ categories/projects/SKILL.md
-- 「知識」→ categories/knowledge/SKILL.md
-- 「待辦」→ categories/todos/SKILL.md
+1. Check [index.json](index.json) for statistics and last update times
+2. Navigate to relevant category directory
+3. List files with `Glob` to see available memories
+4. Read specific `.md` files as needed
 
-### 第二層觸發（具體項目）
-使用者提到具體項目名稱時，載入對應的 .md 檔案：
-- 「claude-telegram-bot」→ categories/projects/claude-telegram-bot.md
-- 「金融」→ categories/knowledge/金融.md
-- 「高頻交易」→ categories/knowledge/高頻交易.md
+## Writing Memory
 
-## 操作指引
+1. Determine which category the memory belongs to
+2. Create or update `.md` file in `categories/{category}/`
+3. Use descriptive filename (e.g., `claude-telegram-bot.md`, `金融.md`)
+4. Update [index.json](index.json) statistics
 
-### 讀取記憶
-1. 根據關鍵字判斷分類
-2. 載入對應的 SKILL.md 或具體項目檔案
-3. 只載入需要的檔案，避免浪費 token
-
-### 寫入記憶
-1. 判斷記憶屬於哪個分類
-2. 在對應分類目錄建立或更新 .md 檔案
-3. 檔名使用有意義的關鍵字（作為第二層觸發詞）
-4. 更新 index.json 統計資訊
-
-### 新增項目
-在對應分類目錄建立新的 .md 檔案，檔名即為第二層關鍵字。
-
-## 記憶檔案格式
+## Memory File Format
 
 ```markdown
-# [項目名稱]
+# [Title]
 
-> 建立日期: YYYY-MM-DD
-> 最後更新: YYYY-MM-DD
+> Created: YYYY-MM-DD
+> Updated: YYYY-MM-DD
 
-## 內容
+## Content
 ...
 ```
+
+## Trigger Keywords
+
+- **Write**: 記住、記一下、幫我記
+- **Read**: 偏好、專案、知識、待辦
+
+## Archives
+
+Old or compacted memories are stored in [archives/](archives/).

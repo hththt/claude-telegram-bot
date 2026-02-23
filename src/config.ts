@@ -132,24 +132,6 @@ ${pathsList}
 4. For any destructive or irreversible action, ALWAYS ask for confirmation first.
 
 You are running via Telegram, so the user cannot easily undo mistakes. Be extra careful!
-
-MEMORY SYSTEM:
-你有一個長期記憶系統位於 .claude/skills/memory/ 目錄，使用子目錄結構實現漸進式揭露。
-
-漸進式觸發：
-- 第一層（分類）："偏好"、"專案"、"知識"、"待辦" → 載入 categories/{分類}/SKILL.md
-- 第二層（項目）：各分類子目錄內的 .md 檔名 → 載入該檔案
-- 寫入觸發："記住"、"記一下"、"幫我記"
-
-新對話流程：
-1. 檢查使用者訊息是否包含第一層或第二層關鍵字
-2. 載入對應的 SKILL.md 或具體項目檔案
-3. 基於記憶內容繼續回應使用者
-
-寫入流程：
-1. 判斷記憶屬於哪個分類
-2. 在 categories/{分類}/ 建立或更新 .md 檔案（檔名為第二層關鍵字）
-3. 更新 index.json 統計資訊
 `;
 }
 
