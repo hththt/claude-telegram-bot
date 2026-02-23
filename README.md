@@ -31,6 +31,7 @@
 - 📨 **訊息佇列**：Claude 處理時可繼續發送多則訊息 - 會自動排隊。使用 `!` 前綴或 `/stop` 可中斷並立即發送
 - 🧠 **延伸思考**：使用「think」或「reason」等詞彙觸發 Claude 的推理功能 - 你會看到它的思考過程（可透過 `THINKING_TRIGGER_KEYWORDS` 設定）
 - 🔘 **互動按鈕**：Claude 可透過內建的 `ask_user` MCP 工具將選項顯示為可點擊的內嵌按鈕
+- 💾 **長期記憶**：Claude 可記住你的偏好、專案知識和待辦事項，跨對話持續保存
 
 ## 快速開始
 
@@ -87,6 +88,10 @@ new - 開始新對話
 resume - 從最近的對話中選擇恢復
 stop - 中斷目前查詢
 status - 查看 Claude 正在做什麼
+remember - 儲存記憶
+recall - 讀取記憶
+memory - 查看記憶狀態
+compact - 壓縮整理記憶
 restart - 重新啟動機器人
 ```
 
@@ -129,15 +134,64 @@ cp mcp-config.ts mcp-config.local.ts
 
 機器人內建 `ask_user` MCP 伺服器，讓 Claude 可以將選項顯示為可點擊的內嵌鍵盤按鈕。加入你自己的 MCP 伺服器（Things、Notion、Typefully 等）讓 Claude 可以使用你的工具。
 
+## 記憶系統
+
+機器人內建長期記憶系統，讓 Claude 可以跨對話記住重要資訊。
+
+### 記憶分類
+
+| 分類 | 說明 | 範例 |
+|------|------|------|
+| **preferences** | 使用者偏好設定 | 語言偏好、程式碼風格 |
+| **projects** | 專案相關知識 | 架構決策、技術選型 |
+| **knowledge** | 學習的知識 | 技術筆記、概念整理 |
+| **todos** | 待辦事項 | 工作任務、提醒事項 |
+
+### 使用方式
+
+**自動觸發**：對話中說「記住...」、「幫我記...」，Claude 會自動存入記憶。
+
+**明確指令**：
+```
+/remember 我喜歡用 TypeScript 和 Bun
+/remember 專案 my-app 使用 React 和 Tailwind
+/recall 偏好
+/recall 專案
+```
+
+**對話結束自動擷取**：使用 `/new` 開始新對話時，會自動擷取上次對話的重點存入記憶。
+
+### 記憶檔案結構
+
+記憶儲存在 `CLAUDE_WORKING_DIR/.claude/skills/memory/`：
+
+```
+.claude/skills/memory/
+├── SKILL.md              # 記憶系統指引
+├── index.json            # 記憶索引統計
+├── categories/
+│   ├── preferences/      # 偏好記憶
+│   ├── projects/         # 專案記憶
+│   ├── knowledge/        # 知識記憶
+│   └── todos/            # 待辦記憶
+└── archives/             # 壓縮歷史
+```
+
+記憶檔案為 Markdown 格式，可直接手動編輯。
+
 ## 機器人指令
 
 | 指令       | 說明                              |
 | ---------- | --------------------------------- |
 | `/start`   | 顯示狀態和你的使用者 ID           |
-| `/new`     | 開始新對話                        |
+| `/new`     | 開始新對話（自動擷取上次對話重點存入記憶）|
 | `/resume`  | 從最近 5 個對話中選擇恢復（附摘要）|
 | `/stop`    | 中斷目前查詢                      |
 | `/status`  | 查看 Claude 正在做什麼            |
+| `/remember`| 儲存記憶（例：`/remember 我喜歡簡潔的程式碼`）|
+| `/recall`  | 讀取記憶（例：`/recall 專案` 或 `/recall` 顯示全部）|
+| `/memory`  | 查看記憶系統狀態                  |
+| `/compact` | 壓縮整理記憶                      |
 | `/restart` | 重新啟動機器人                    |
 
 ## 作為服務執行（macOS）
