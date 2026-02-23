@@ -169,6 +169,71 @@ alias cbot-restart='launchctl kickstart -k gui/$(id -u)/com.claude-telegram-ts &
 alias cbot-logs='tail -f /tmp/claude-telegram-bot-ts.log'
 ```
 
+## 作為服務執行（Ubuntu/Linux）
+
+### 1. 建立 systemd 服務檔案
+
+```bash
+sudo nano /etc/systemd/system/claude-telegram-bot.service
+```
+
+內容：
+
+```ini
+[Unit]
+Description=Claude Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+User=你的使用者名稱
+WorkingDirectory=/path/to/claude-telegram-bot
+ExecStart=/home/你的使用者名稱/.bun/bin/bun run src/index.ts
+Restart=always
+RestartSec=10
+EnvironmentFile=/path/to/claude-telegram-bot/.env
+
+# 日誌
+StandardOutput=append:/var/log/claude-telegram-bot.log
+StandardError=append:/var/log/claude-telegram-bot.err
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### 2. 啟用並啟動服務
+
+```bash
+# 重新載入 systemd
+sudo systemctl daemon-reload
+
+# 啟用開機自動啟動
+sudo systemctl enable claude-telegram-bot
+
+# 啟動服務
+sudo systemctl start claude-telegram-bot
+```
+
+### 3. 管理指令
+
+| 操作 | 指令 |
+|------|------|
+| 啟動 | `sudo systemctl start claude-telegram-bot` |
+| 停止 | `sudo systemctl stop claude-telegram-bot` |
+| 重啟 | `sudo systemctl restart claude-telegram-bot` |
+| 狀態 | `sudo systemctl status claude-telegram-bot` |
+| 日誌 | `sudo journalctl -u claude-telegram-bot -f` |
+
+**Shell 別名**（加入 `~/.bashrc`）：
+
+```bash
+alias cbot='sudo systemctl status claude-telegram-bot'
+alias cbot-start='sudo systemctl start claude-telegram-bot'
+alias cbot-stop='sudo systemctl stop claude-telegram-bot'
+alias cbot-restart='sudo systemctl restart claude-telegram-bot'
+alias cbot-logs='sudo journalctl -u claude-telegram-bot -f'
+```
+
 ## 開發
 
 ```bash
