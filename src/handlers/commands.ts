@@ -50,7 +50,7 @@ export async function handleStart(ctx: Context): Promise<void> {
 }
 
 /**
- * /new - Start a fresh session.
+ * /new - Start a fresh session with optional memory extraction.
  */
 export async function handleNew(ctx: Context): Promise<void> {
   const userId = ctx.from?.id;
@@ -66,6 +66,36 @@ export async function handleNew(ctx: Context): Promise<void> {
     if (result) {
       await Bun.sleep(100);
       session.clearStopRequested();
+    }
+  }
+
+  // If there's an active session, extract memories before clearing
+  if (session.isActive) {
+    await ctx.reply("📝 正在擷取對話重點存入記憶...");
+
+    try {
+      // Send extraction command to Claude
+      const { handleText } = await import("./text");
+
+      const extractCtx = {
+        ...ctx,
+        message: {
+          ...ctx.message,
+          text: "請回顧這次對話，擷取重要資訊並存入記憶系統：\n" +
+            "1. 使用者提到的偏好或習慣 → preferences\n" +
+            "2. 專案相關的知識或決策 → projects\n" +
+            "3. 學到的知識或技術 → knowledge\n" +
+            "4. 待辦事項或提醒 → todos\n" +
+            "只擷取有價值的資訊，不要重複已存在的記憶。完成後簡短回報。",
+        },
+      } as Context;
+
+      await handleText(extractCtx);
+
+      // Wait a bit for the extraction to complete
+      await Bun.sleep(500);
+    } catch (e) {
+      console.error("Memory extraction failed:", e);
     }
   }
 

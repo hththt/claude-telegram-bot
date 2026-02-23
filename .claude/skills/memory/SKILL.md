@@ -52,6 +52,19 @@ allowed-tools: Read, Write, Edit, Grep, Glob
 - **Write**: 記住、記一下、幫我記
 - **Read**: 偏好、專案、知識、待辦
 
+## Session End Extraction
+
+當使用者結束對話（/new）時，系統會請你擷取對話重點：
+
+1. **回顧對話**：找出有價值的資訊
+2. **分類歸納**：
+   - 偏好/習慣 → `categories/preferences/`
+   - 專案知識 → `categories/projects/{專案名}.md`
+   - 學習內容 → `categories/knowledge/{主題}.md`
+   - 待辦事項 → `categories/todos/`
+3. **避免重複**：先檢查現有記憶，只新增或更新有差異的內容
+4. **簡潔回報**：告知使用者存了什麼
+
 ## Archives
 
 Old or compacted memories are stored in [archives/](archives/).
