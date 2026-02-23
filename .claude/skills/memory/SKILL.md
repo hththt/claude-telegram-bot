@@ -3,12 +3,10 @@ name: memory
 description: |
   長期記憶系統。觸發關鍵字：
   - "記住"、"記一下"、"幫我記"
-  - "我的偏好"、"偏好"、"preferences"
-  - "專案"、"project"、"projects"
+  - "偏好"、"preferences"
+  - "專案"、"projects"
   - "知識"、"knowledge"
-  - "待辦"、"todo"、"todos"
-  - "背景"、"context"
-  - "compact"、"壓縮記憶"
+  - "待辦"、"todos"
 allowed-tools: Read, Write, Edit, Grep, Glob
 ---
 
@@ -91,14 +89,10 @@ allowed-tools: Read, Write, Edit, Grep, Glob
 
 ### 讀取觸發（分類關鍵字）
 當使用者提到以下關鍵字時，先載入對應記憶再繼續對話：
-- 「偏好」、「preferences」、「我喜歡」→ 讀取 preferences
-- 「專案」、「project」、「projects」→ 讀取 projects
-- 「知識」、「knowledge」、「學過」→ 讀取 knowledge
-- 「待辦」、「todo」、「todos」→ 讀取 todos
-- 「背景」、「context」→ 讀取 context
-
-### 壓縮觸發
-- 使用者說「compact」、「壓縮記憶」→ 執行壓縮
+- 「偏好」、「preferences」→ 讀取 preferences
+- 「專案」、「projects」→ 讀取 projects
+- 「知識」、「knowledge」→ 讀取 knowledge
+- 「待辦」、「todos」→ 讀取 todos
 
 ### 新對話流程
 在新 session 開始時，若使用者訊息包含任何分類關鍵字：

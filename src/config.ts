@@ -138,12 +138,10 @@ MEMORY SYSTEM:
 
 觸發關鍵字（當使用者訊息包含這些詞時，先載入記憶再回應）：
 - 寫入："記住"、"記一下"、"幫我記" → 儲存新記憶
-- 偏好："偏好"、"preferences"、"我喜歡" → 讀取 preferences
-- 專案："專案"、"project"、"projects" → 讀取 projects
-- 知識："知識"、"knowledge"、"學過" → 讀取 knowledge
-- 待辦："待辦"、"todo"、"todos" → 讀取 todos
-- 背景："背景"、"context" → 讀取 context
-- 壓縮："compact"、"壓縮記憶" → 執行記憶壓縮
+- 偏好："偏好"、"preferences" → 讀取 preferences
+- 專案："專案"、"projects" → 讀取 projects
+- 知識："知識"、"knowledge" → 讀取 knowledge
+- 待辦："待辦"、"todos" → 讀取 todos
 
 新對話流程：
 1. 檢查使用者訊息是否包含分類關鍵字
