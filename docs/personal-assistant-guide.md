@@ -1,157 +1,157 @@
-# Claude Code as a Personal Assistant
+# Claude Code 作為個人助理
 
-Some context: I'm [Fabrizio](https://fabrizio.so), [@linuz90 on X](https://x.com/linuz90), co-founder and designer of [Typefully](https://typefully.com).
+一些背景：我是 [Fabrizio](https://fabrizio.so)，X 上的 [@linuz90](https://x.com/linuz90)，[Typefully](https://typefully.com) 的共同創辦人兼設計師。
 
-At Typefully, we fully embraced AI coding early on, and we use Claude Code (and Codex) extensively. But I also like to optimize and automate parts of my personal life.
+在 Typefully，我們很早就全面擁抱 AI 編碼，並大量使用 Claude Code（和 Codex）。但我也喜歡優化和自動化我個人生活的某些部分。
 
-Especially since the introduction of the Sonnet/Opus 4.5 models, [Claude Code](https://claude.com/product/claude-code) has become my AI coding assistant of choice.
+特別是自從 Sonnet/Opus 4.5 模型推出後，[Claude Code](https://claude.com/product/claude-code) 已成為我首選的 AI 編碼助手。
 
-I quickly realized that these models are actually very capable **general-purpose agents** when given the right instructions, context, and tools.
+我很快意識到，當給予適當的指示、上下文和工具時，這些模型實際上是非常能幹的**通用型助手**。
 
-After seeing my co-founder [Francesco](https://x.com/frankdilo) use Claude Code to handle tasks and emails, I started **using it as a personal assistant, especially through Telegram** (which is what this project is about).
+在看到我的共同創辦人 [Francesco](https://x.com/frankdilo) 使用 Claude Code 處理任務和電子郵件後，我開始**把它當作個人助理使用，特別是透過 Telegram**（這就是這個專案的目的）。
 
-After some iteration, I landed on this system/setup:
+經過一些迭代後，我得出了這個系統/設定：
 
-1. **I've created a `fab-dev` folder** with a `CLAUDE.md` that teaches Claude about me, my preferences, where my notes live, my workflows.
-2. _OPTIONAL_: I've asked Claude to **[symlink](https://en.wikipedia.org/wiki/Symbolic_link) configuration files** into this new central folder, so I can edit them easily and improve my dev setup. For example, I symlinked `~/.claude/commands` and `~/.claude/skills` here, so I can ask Claude to add new commands or skills which will be available everywhere. I also symlinked `~/.zshrc` into this folder for shell configuration.
-3. _OPTIONAL_: **I've tracked the folder as a Git repository** so I can also easily version control it, or share it on multiple Macs in the future if I need it.
-4. **I set this "fab-dev" folder as the working directory** for this bot (via `CLAUDE_WORKING_DIR`).
+1. **我建立了一個 `fab-dev` 資料夾**，其中包含一個 `CLAUDE.md` 來教導 Claude 關於我的資訊、我的偏好、我的筆記存放位置、我的工作流程。
+2. _選用_：我請 Claude **將設定檔[符號連結](https://en.wikipedia.org/wiki/Symbolic_link)** 到這個新的中央資料夾，這樣我可以輕鬆編輯它們並改善我的開發設定。例如，我將 `~/.claude/commands` 和 `~/.claude/skills` 符號連結到這裡，這樣我可以請 Claude 新增在任何地方都可用的指令或技能。我也將 `~/.zshrc` 符號連結到這個資料夾用於 shell 設定。
+3. _選用_：**我將這個資料夾追蹤為 Git 儲存庫**，這樣我也可以輕鬆進行版本控制，或未來需要時在多台 Mac 上共享。
+4. **我將這個「fab-dev」資料夾設定為這個機器人的工作目錄**（透過 `CLAUDE_WORKING_DIR`）。
 
-**To keep CLAUDE.md lean**, I reference my personal notes system there rather than embedding everything directly.
+**為了保持 CLAUDE.md 精簡**，我在其中引用我的個人筆記系統，而不是直接嵌入所有內容。
 
-The main "Notes" folder referenced in `CLAUDE.md` is an iCloud folder that I added to [Ulysses](https://ulysses.app/) and [iA Writer](https://ia.net/writer), so I can see changes made by my assistant live, wherever I am. iCloud is insanely good at this, pushing updates live to all devices in the background.
+`CLAUDE.md` 中引用的主要「Notes」資料夾是一個 iCloud 資料夾，我將它加入到 [Ulysses](https://ulysses.app/) 和 [iA Writer](https://ia.net/writer)，這樣我可以在任何地方即時看到助手所做的更改。iCloud 在這方面非常出色，能在背景即時將更新推送到所有裝置。
 
-Also, I've extended its capabilities by installing [MCPs](https://code.claude.com/docs/en/mcp), adding [commands](https://code.claude.com/docs/en/slash-commands), and [skills](https://code.claude.com/docs/en/skills). Skills are particularly powerful — they're auto-triggered based on context and define specific workflows for common tasks like creating todos, researching topics, or planning workouts.
+此外，我透過安裝 [MCP](https://code.claude.com/docs/en/mcp)、新增[指令](https://code.claude.com/docs/en/slash-commands)和[技能](https://code.claude.com/docs/en/skills)來擴展其功能。技能特別強大——它們會根據上下文自動觸發，並為常見任務定義特定的工作流程，如建立待辦事項、研究主題或規劃健身。
 
-**The magical part: when I need a new capability, I just ask Claude to build it.** Even via the Telegram bot, on the go.
+**神奇的部分：當我需要新功能時，我只需請 Claude 建立它。** 甚至可以透過 Telegram 機器人在外出時進行。
 
-For example, I wanted my assistant to summarize videos, so I asked it to create scripts for fetching YouTube subtitles (with fallback to downloading and transcribing locally). Now I can request video summaries from anywhere via Telegram.
+例如，我想讓助手總結影片，所以我請它建立獲取 YouTube 字幕的腳本（並在必要時下載並在本地轉錄）。現在我可以透過 Telegram 從任何地方請求影片摘要。
 
-![Video summary example](../assets/demo-video-summary.gif)
+![影片摘要範例](../assets/demo-video-summary.gif)
 
-So wether I launch a Claude Code session (usually with the `--dangerously-skip-permissions` flag) on my Mac or chat with the Telegram bot, **Claude is now my 24/7 executive assistant**.
+所以無論我在 Mac 上啟動 Claude Code 對話（通常使用 `--dangerously-skip-permissions` 旗標）還是與 Telegram 機器人聊天，**Claude 現在是我的 24/7 執行助理**。
 
-## CLAUDE.md is the Assistant's Brain
+## CLAUDE.md 是助理的大腦
 
-The `CLAUDE.md` file in my personal assistant `fab-dev` folder is the centerpiece of the setup.
+我個人助理 `fab-dev` 資料夾中的 `CLAUDE.md` 檔案是這個設定的核心。
 
-Since Claude runs by default with prompt permissions bypassed (more on this in [SECURITY.md](../SECURITY.md)), it can browse other folders, read and write files, and execute commands quite freely within the allowed paths (more on scripts and commands below).
+由於 Claude 預設會跳過權限提示（詳見 [SECURITY.md](../SECURITY.md)），它可以相當自由地瀏覽其他資料夾、讀寫檔案、在允許的路徑內執行指令（更多關於腳本和指令的內容請見下文）。
 
-Here's a template based on my own setup:
+這是一個基於我自己設定的範本：
 
 ````
 # CLAUDE.md
 
-This file provides guidance to Claude Code so it can act as [Your Name]'s personal assistant.
+這個檔案為 Claude Code 提供指引，使其能作為 [你的名字] 的個人助理。
 
-## Quick Reference
+## 快速參考
 
-**This folder:**
-- `cli/` - Utility scripts (run with `bun run cli/...`)
-- `.claude/skills/` - Task workflows (things-todo, gmail, research, workout-planning, etc.)
-- `.claude/agents/` - Subagents for pulse and digests
+**這個資料夾：**
+- `cli/` - 實用腳本（使用 `bun run cli/...` 執行）
+- `.claude/skills/` - 任務工作流程（things-todo、gmail、research、workout-planning 等）
+- `.claude/agents/` - 用於脈動和摘要的子代理
 
-**Key paths:**
-- Notes: `~/Documents/Notes/` (Me/, Research/, Health/, Journal/, [Hobby]/)
-- Personal docs: `~/Documents/Personal/`
+**關鍵路徑：**
+- 筆記：`~/Documents/Notes/`（Me/、Research/、Health/、Journal/、[嗜好]/）
+- 個人文件：`~/Documents/Personal/`
 
-## About [Your Name]
+## 關於 [你的名字]
 
-[Your Name] is a [age]yo [profession] based in [City].
+[你的名字] 是一位 [年齡] 歲的 [職業]，住在 [城市]。
 
-[Brief context about work, lifestyle, hobbies, etc.]
+[關於工作、生活方式、嗜好等的簡要背景]
 
-For personal context, goals, and finances — see the Me/ files below.
+個人背景、目標和財務——請見下方的 Me/ 檔案。
 
-**Keeping context fresh**: When new personal information emerges, proactively update the relevant Me/ notes.
+**保持上下文新鮮**：當出現新的個人資訊時，主動更新相關的 Me/ 筆記。
 
-## How to Assist
+## 如何協助
 
-- **Choose the right source(s)**: Autonomously decide where to look. Search multiple sources in parallel when needed (web, notes, reddit, etc.)
-- **Always check the date**: For time-sensitive questions, run `date` first
-- **Communication style**: [e.g., "Balanced and friendly, use emojis sparingly"]
-- **Autonomy**: Handle routine tasks independently, ask before significant actions
-- **Formatting**: Prefer bullet lists over markdown tables
-- **Priority**: Highlight important items; don't just dump lists
+- **選擇正確的來源**：自主決定在哪裡查找。需要時平行搜尋多個來源（網路、筆記、reddit 等）
+- **總是檢查日期**：對於時效性問題，先執行 `date`
+- **溝通風格**：[例如「平衡且友善，謹慎使用表情符號」]
+- **自主性**：獨立處理例行任務，重大行動前先詢問
+- **格式**：偏好項目符號列表而非 markdown 表格
+- **優先順序**：突出重要項目；不要只是傾倒列表
 
-**CRITICAL**: When asked to remember something, update the relevant file:
-- Personal goal → `life-goals.md`
-- Personal context → `personal-context.md`
-- Claude behavior → `CLAUDE.md`
+**關鍵**：當被要求記住某事時，更新相關檔案：
+- 個人目標 → `life-goals.md`
+- 個人背景 → `personal-context.md`
+- Claude 行為 → `CLAUDE.md`
 
-# KNOWLEDGE & FILES
+# 知識與檔案
 
-Notes are stored in `~/Documents/Notes/` (synced to iCloud). Use `qmd` for semantic search:
+筆記存放在 `~/Documents/Notes/`（同步到 iCloud）。使用 `qmd` 進行語義搜尋：
 
-    qmd search "keywords"   # Fast keyword matching
-    qmd query "question"    # LLM reranking (best quality)
+    qmd search "關鍵字"   # 快速關鍵字比對
+    qmd query "問題"      # LLM 重新排序（最佳品質）
 
-## Personal Context (Me/)
+## 個人背景（Me/）
 
-Source-of-truth files:
-- `personal-context.md` — Family, friends, preferences, habits
-- `life-goals.md` — Long-term objectives
-- `pulse.md` — Current life digest
-- `finances.md` — Financial overview
+真實來源檔案：
+- `personal-context.md` — 家人、朋友、偏好、習慣
+- `life-goals.md` — 長期目標
+- `pulse.md` — 目前生活摘要
+- `finances.md` — 財務概覽
 
-## Other Folders
+## 其他資料夾
 
-- `Journal/` — Monthly entries by year
-- `Health/` — Diet, workouts, training plan
-- `Research/` — Research notes
-- `[Hobby]/` — Hobby-specific notes
+- `Journal/` — 按年份的月度記錄
+- `Health/` — 飲食、健身、訓練計畫
+- `Research/` — 研究筆記
+- `[嗜好]/` — 特定嗜好的筆記
 
-## Quick Lookup
+## 快速查詢
 
-- Life/priorities → `Me/pulse.md` + recent Journal
-- Goals → `Me/life-goals.md`
-- Workouts → `Health/` or `bun run cli/utils/health.ts workouts week`
+- 生活/優先事項 → `Me/pulse.md` + 最近的 Journal
+- 目標 → `Me/life-goals.md`
+- 健身 → `Health/` 或 `bun run cli/utils/health.ts workouts week`
 
-# TASK MANAGEMENT
+# 任務管理
 
-## Tasks
+## 任務
 
-Use the `things-todo` skill for task creation, scheduling, and project routing.
+使用 `things-todo` 技能來建立任務、排程和專案路由。
 
-**When asked "what's on my plate"**: Check both tasks AND calendar.
+**當被問到「我有什麼事情要處理」時**：同時檢查任務和日曆。
 
-## Calendar
+## 日曆
 
     bun run cli/google/calendar.ts today|tomorrow|week|range <from> <to>
 
-## Email
+## 電子郵件
 
-Use the `gmail` skill for email and email-to-task workflows.
+使用 `gmail` 技能處理電子郵件和郵件轉任務的工作流程。
 
-## Work Integrations (optional)
+## 工作整合（選用）
 
     bun run cli/integrations/slack.ts channels|messages|recent
     bun run cli/integrations/notion.ts search|page|databases
 
 ````
 
-The _"keeping context fresh"_ instruction creates a sort of **file-based memory system**, since Claude automatically reads and updates context files (notes) as it learns new things about me.
+「保持上下文新鮮」的指示建立了一種**基於檔案的記憶系統**，因為 Claude 會在學習關於我的新事物時自動讀取和更新上下文檔案（筆記）。
 
-I also occasionally ask Claude to check my Notes folder, Things projects, etc., and update the `CLAUDE.md` file with the latest information, so it's fine to hardcode some information there since it's quite easy to let it update itself.
+我也偶爾請 Claude 檢查我的 Notes 資料夾、Things 專案等，並用最新資訊更新 `CLAUDE.md` 檔案，所以在那裡硬編碼一些資訊是可以的，因為讓它自我更新相當容易。
 
-## Example: Claude as a Personal Trainer / Health Coach
+## 範例：Claude 作為私人教練 / 健康教練
 
-One of my favorite uses of this setup is having Claude act as a personal trainer that knows my diet, my training plan, and my recent activity.
+我最喜歡的用法之一是讓 Claude 作為私人教練，了解我的飲食、訓練計畫和最近的活動。
 
-I recorded demos on my Mac, but this is what I normally do on the go, from my iPhone:
+我在 Mac 上錄製了示範，但這是我通常在外出時用 iPhone 做的事：
 
-![Workout example](../assets/demo-workout.gif)
+![健身範例](../assets/demo-workout.gif)
 
-The setup is simple:
+設定很簡單：
 
-1. **[Health Auto Export](https://www.healthyapps.dev/)** - An iOS app that syncs Apple Health data to iCloud as daily JSON files
-2. **A CLI script** (`cli/utils/health.ts`) that reads those files and returns structured health data — you can ask Claude to build this kind of script quite easily
-3. **A `workout-planning` skill** that defines the workflow for creating workouts based on training plan and recent activity
-4. **A Notes folder** (synced via iCloud) where workout logs are saved as markdown
+1. **[Health Auto Export](https://www.healthyapps.dev/)** - 一個 iOS 應用程式，將 Apple Health 資料同步到 iCloud 作為每日 JSON 檔案
+2. **一個 CLI 腳本**（`cli/utils/health.ts`）讀取這些檔案並返回結構化的健康資料——你可以很容易地請 Claude 建立這類腳本
+3. **一個 `workout-planning` 技能**，定義根據訓練計畫和最近活動建立健身計畫的工作流程
+4. **一個 Notes 資料夾**（透過 iCloud 同步）用於儲存健身記錄的 markdown 檔案
 
-I asked Claude to create the health script, which parses Health Auto Export's JSON files and returns my current health metrics plus historical trends for comparison.
+我請 Claude 建立健康腳本，它會解析 Health Auto Export 的 JSON 檔案並返回我目前的健康指標以及歷史趨勢用於比較。
 
-Here's what it returns:
+這是它返回的內容：
 
 ```json
 {
@@ -187,222 +187,222 @@ Here's what it returns:
 }
 ```
 
-Now I can ask things like "how did I sleep?" or "how's my recovery looking?" from anywhere.
+現在我可以在任何地方問「我睡得怎麼樣？」或「我的恢復狀況如何？」。
 
-Instead of embedding workout instructions in CLAUDE.md, I now use a **`workout-planning` skill** (`.claude/skills/workout-planning/SKILL.md`):
+我現在使用一個 **`workout-planning` 技能**（`.claude/skills/workout-planning/SKILL.md`）而不是在 CLAUDE.md 中嵌入健身指示：
 
 ```markdown
 ---
 name: workout-planning
-description: Create personalized workout plans based on training program and recent activity. Use when asked for a workout, exercise routine, gym plan, or "what should I train today".
+description: 根據訓練計畫和最近活動建立個人化的健身計畫。當被要求健身、運動例程、健身房計畫或「今天該練什麼」時使用。
 allowed-tools: Read, Write, Bash(cli/utils/health.ts workouts:*), Glob
 ---
 
-# Workout Planning
+# 健身規劃
 
-When asked for a workout:
+當被要求健身時：
 
-1. **Read training program**: `~/Documents/Notes/Health/training.md` (PT plan)
-2. **Check recent logs**: `~/Documents/Notes/Health/Workouts/`
-3. **Check workout frequency**: Run `health.ts workouts week` to see last 7 days
-4. **Propose appropriate workout** based on what's scheduled and recent activity
-5. **Immediately create** the workout file: `Health/Workouts/YYYY-MM-DD-workout.md`
+1. **讀取訓練計畫**：`~/Documents/Notes/Health/training.md`（私人教練計畫）
+2. **檢查最近記錄**：`~/Documents/Notes/Health/Workouts/`
+3. **檢查健身頻率**：執行 `health.ts workouts week` 查看過去 7 天
+4. **根據排程和最近活動提出適當的健身計畫**
+5. **立即建立**健身檔案：`Health/Workouts/YYYY-MM-DD-workout.md`
 ```
 
-The skill also includes a CLI for checking workout history:
+技能還包含一個用於檢查健身歷史的 CLI：
 
 ```bash
-bun run cli/utils/health.ts workouts           # Today's workouts
-bun run cli/utils/health.ts workouts week      # Last 7 days
-bun run cli/utils/health.ts workouts enrich    # Add Health data to today's log
+bun run cli/utils/health.ts workouts           # 今天的健身
+bun run cli/utils/health.ts workouts week      # 過去 7 天
+bun run cli/utils/health.ts workouts enrich    # 將 Health 資料加入今天的記錄
 ```
 
-When I message "give me a workout", Claude:
+當我傳訊「給我一個健身計畫」時，Claude 會：
 
-1. Checks my training plan from my PT
-2. Looks at what I did in recent workouts
-3. Considers my recovery score from the health script
-4. Creates a workout log file like this:
+1. 檢查我私人教練的訓練計畫
+2. 查看我最近的健身記錄
+3. 考慮健康腳本提供的恢復分數
+4. 建立這樣的健身記錄檔案：
 
 ```markdown
-# Workout - 29 Dec 2025
+# 健身 - 2025 年 12 月 29 日
 
-**Type:** Full Body
-**Location:** Gym
+**類型：** 全身
+**地點：** 健身房
 
-## Exercises
+## 動作
 
-3 sets, 10-12 reps, 1 min rest
+3 組，10-12 次，休息 1 分鐘
 
-1. **Leg Extension** - [video](https://youtu.be/...)
-2. **Leg Curl** - [video](https://youtu.be/...)
-3. **Lat Machine** - [video](https://youtu.be/...)
-4. **Shoulder Press** - [video](https://youtu.be/...)
-5. **Triceps Pushdown + Bicep Curl**
+1. **腿部伸展** - [影片](https://youtu.be/...)
+2. **腿部彎舉** - [影片](https://youtu.be/...)
+3. **滑輪下拉** - [影片](https://youtu.be/...)
+4. **肩推** - [影片](https://youtu.be/...)
+5. **三頭肌下壓 + 二頭肌彎舉**
 
-## Notes
+## 備註
 
-Light workout during vacation, ~45-50 min.
+假期期間的輕度訓練，約 45-50 分鐘。
 ```
 
-Since my Notes folder syncs via iCloud, I open [Ulysses](https://ulysses.app/) on my iPhone at the gym and the workout is right there.
+由於我的 Notes 資料夾透過 iCloud 同步，我在健身房打開 iPhone 上的 [Ulysses](https://ulysses.app/)，健身計畫就在那裡。
 
-I can message Claude mid-workout asking to tweak something, like "swap the shoulder press for lateral raises", and the file updates. I see the change live in Ulysses within seconds.
+我可以在健身過程中傳訊給 Claude 要求調整，例如「把肩推換成側平舉」，檔案就會更新。我在幾秒內就能在 Ulysses 中看到更改。
 
-It's like having a personal trainer in my pocket who knows my training history, my recovery status, and can adjust on the fly.
+就像口袋裡有一個私人教練，了解我的訓練歷史、恢復狀況，並能即時調整。
 
-As usual, the better the context, the better the results. So if you have a training plan or training history, make sure those notes are available to Claude.
+一如既往，上下文越好，結果越好。所以如果你有訓練計畫或訓練歷史，確保 Claude 可以存取這些筆記。
 
-## Example: Life Pulse Command with Subagents
+## 範例：使用子代理的生活脈動指令
 
-[Commands](https://code.claude.com/docs/en/slash-commands) let you define reusable prompts with dynamic context. They live in `~/.claude/commands/` (global) or `your-project/claude/commands/`.
+[指令](https://code.claude.com/docs/en/slash-commands)讓你可以定義帶有動態上下文的可重複使用提示。它們存放在 `~/.claude/commands/`（全域）或 `your-project/claude/commands/`。
 
-[Subagents](https://code.claude.com/docs/en/sub-agents) on the other hand are specialized agents that Claude can delegate tasks to. They're defined as markdown files in `.claude/agents/` and each runs with its own context window, which keeps the main conversation lean.
+另一方面，[子代理](https://code.claude.com/docs/en/sub-agents)是 Claude 可以委派任務的專門代理。它們被定義為 `.claude/agents/` 中的 markdown 檔案，每個都在自己的上下文視窗中執行，這讓主對話保持精簡。
 
-My personal assistant "fab-dev" folder contains both commands and subagents. Commands are symlinked from `~/.claude/commands/` so they're available everywhere, and they can use MCPs and invoke subagents defined in this folder.
+我的個人助理「fab-dev」資料夾包含指令和子代理。指令從 `~/.claude/commands/` 符號連結，所以它們在任何地方都可用，並且它們可以使用 MCP 和呼叫這個資料夾中定義的子代理。
 
-I always liked the idea of reading a sort of **executive summary of what's on my plate** every morning, so I asked Claude to create a `/life-pulse` command, with a set of specialized subagents, and also to set it up to run automatically every morning.
+我一直喜歡每天早上閱讀一種**我待處理事項的執行摘要**的想法，所以我請 Claude 建立一個 `/life-pulse` 指令，配合一組專門的子代理，並設定為每天早上自動執行。
 
-### Why Subagents?
+### 為什麼要用子代理？
 
-A complex command like `/life-pulse` needs to gather data from many sources: email, work issues, finances, health metrics, racing stats, web news. If the main agent does all this directly, the context window fills up fast with raw data, and can lead to poor results or missing information.\*
+像 `/life-pulse` 這樣複雜的指令需要從許多來源收集資料：電子郵件、工作議題、財務、健康指標、賽車統計、網路新聞。如果主代理直接做所有這些，上下文視窗很快就會被原始資料填滿，可能導致結果不佳或資訊遺漏。
 
-So my pulse command uses **6 subagents** that run in parallel:
+所以我的脈動指令使用 **6 個子代理**平行執行：
 
-| Subagent            | Job                            | Returns                                   |
+| 子代理              | 工作                           | 返回                                      |
 | ------------------- | ------------------------------ | ----------------------------------------- |
-| `gmail-digest`      | Analyze inbox & recent emails  | Unread needing attention, orders, threads |
-| `linear-digest`     | Analyze work issues            | In-progress, blockers, up next            |
-| `finance-digest`    | Analyze net worth & allocation | Financial snapshot, time-sensitive items  |
-| `health-digest`     | Analyze Apple Health data      | Brief health check-in                     |
-| `sim-racing-digest` | Analyze race results           | Performance insights                      |
-| `for-you-digest`    | Curate web & Reddit content    | 10-15 interesting items                   |
+| `gmail-digest`      | 分析收件匣和最近郵件           | 需要注意的未讀、訂單、討論串              |
+| `linear-digest`     | 分析工作議題                   | 進行中、阻塞項、下一步                    |
+| `finance-digest`    | 分析淨值和配置                 | 財務快照、時效性項目                      |
+| `health-digest`     | 分析 Apple Health 資料         | 簡要健康檢查                              |
+| `sim-racing-digest` | 分析比賽結果                   | 表現洞察                                  |
+| `for-you-digest`    | 策劃網路和 Reddit 內容         | 10-15 個有趣項目                          |
 
-The main agent then just handles lightweight data (Things tasks, calendar, journal) and **assembles** the subagent outputs into the final digest.
+主代理然後只處理輕量級資料（Things 任務、日曆、日誌）並將子代理輸出**組裝**成最終摘要。
 
-### Subagent Example
+### 子代理範例
 
-Here's what a digest subagent looks like (simplified):
+這是一個摘要子代理的樣子（簡化版）：
 
 ```
 ---
 name: health-digest
-description: Analyzes health metrics and provides a brief check-in. Use for pulse or when user asks about health.
+description: 分析健康指標並提供簡要檢查。用於脈動或當使用者詢問健康時。
 tools: Bash, Read
 model: haiku
 ---
 
-You are a health-conscious friend giving a quick check-in on health metrics.
+你是一個關心健康的朋友，對健康指標進行快速檢查。
 
-## Data Gathering
+## 資料收集
 
-Run the health script:
+執行健康腳本：
 bun run cli/utils/health.ts
 
-## Analysis
+## 分析
 
-Look for what's actually notable:
+尋找真正值得注意的事項：
 
-- Sleep significantly better/worse than usual
-- Resting HR trending up (stress) or down (fitness)
-- HRV changes over the past month
+- 睡眠明顯比平常好/差
+- 靜息心率上升（壓力）或下降（體能）
+- 過去一個月的心率變異性變化
 
-## Output
+## 輸出
 
-Return a brief check-in (3-5 lines). Write like a friend, not a medical report.
+返回簡要檢查（3-5 行）。像朋友一樣寫，不是醫療報告。
 
-Example: "Sleep's been solid at 7.2h — up from 6.8h last month. Resting HR holding at 54bpm. Activity a bit low this week, might want to get some walks in."
+範例：「睡眠一直不錯，7.2 小時——比上個月的 6.8 小時有所提升。靜息心率保持在 54bpm。這週活動量有點低，可能需要多散步。」
 ```
 
-### The Main Pulse Command
+### 主脈動指令
 
-Here's a simplified version of the `/life-pulse` command:
+這是 `/life-pulse` 指令的簡化版本：
 
 ````
 ---
-description: Generate executive life digest
+description: 生成執行生活摘要
 allowed-tools: Bash, Read, Write, mcp__things__*, Task
 ---
 
-# Generate Life Pulse
+# 生成生活脈動
 
-## Context
+## 上下文
 
-- Current time: !`date "+%A, %Y-%m-%d %H:%M"`
+- 目前時間：!`date "+%A, %Y-%m-%d %H:%M"`
 
-## Implementation
+## 實作
 
-1. **Gather Data** (run in parallel):
+1. **收集資料**（平行執行）：
 
-- Things: `get_today`, `get_upcoming`, `get_projects` (lightweight, main agent handles)
-- Calendar: `bun run cli/google/calendar.ts range <today> <today+28>`
-- Journal: Read 2-3 recent entries
-- **Email**: Invoke `gmail-digest` subagent (do NOT run in background)
-- **Work**: Invoke `linear-digest` subagent (do NOT run in background)
-- **Finances**: Invoke `finance-digest` subagent (do NOT run in background)
-- **Health**: Invoke `health-digest` subagent (do NOT run in background)
-- **Racing**: Invoke `sim-racing-digest` subagent (do NOT run in background)
-- **For You**: Invoke `for-you-digest` subagent (do NOT run in background)
+- Things：`get_today`、`get_upcoming`、`get_projects`（輕量級，主代理處理）
+- 日曆：`bun run cli/google/calendar.ts range <today> <today+28>`
+- 日誌：讀取最近 2-3 篇記錄
+- **電子郵件**：呼叫 `gmail-digest` 子代理（不要在背景執行）
+- **工作**：呼叫 `linear-digest` 子代理（不要在背景執行）
+- **財務**：呼叫 `finance-digest` 子代理（不要在背景執行）
+- **健康**：呼叫 `health-digest` 子代理（不要在背景執行）
+- **賽車**：呼叫 `sim-racing-digest` 子代理（不要在背景執行）
+- **為你推薦**：呼叫 `for-you-digest` 子代理（不要在背景執行）
 
-2. **Synthesize** the outputs into sections:
+2. **綜合**輸出為各區段：
 
-- **TL;DR**: Bullet points (max 400 chars each) capturing essential state of life. Each bullet starts with a relevant emoji. Include financial snapshot, email highlights, upcoming events.
-  - For items with a clear next action, add a follow-up line:
+- **摘要**：項目符號（每個最多 400 字元）捕捉生活的核心狀態。每個項目以相關表情符號開頭。包含財務快照、郵件重點、即將到來的事件。
+  - 對於有明確下一步行動的項目，加上後續行：
     ```
-    💰 **Item description here.**
-    ↳ **Clear next action here**
+    💰 **項目描述在此。**
+    ↳ **明確的下一步行動在此**
     ```
-- **Now**: Very concise list of what needs attention. 3-6 items max, no fluff.
-- **For You**: Curated content from for-you-digest. Brief bullets with emojis and links.
-- **Top of Mind**: What's occupying mental bandwidth. Use emoji at the start of each paragraph.
-- **Health**: From health-digest. Can be bullets, each with a relevant emoji.
-- **Next**: Near-term priorities combined with longer-term goals.
+- **現在**：非常簡潔的需要注意的事項列表。最多 3-6 個項目，不廢話。
+- **為你推薦**：來自 for-you-digest 的策劃內容。簡短的帶表情符號和連結的項目。
+- **腦中所想**：佔據心理頻寬的事項。每段開頭使用表情符號。
+- **健康**：來自 health-digest。可以是項目符號，每個帶相關表情符號。
+- **下一步**：近期優先事項結合長期目標。
 
-3. **Formatting Rules**:
-- NO TABLES — use natural prose and bullet points
-- Use **bold** for emphasis on key terms
-- Keep it scannable but warm, like a personal briefing
-- Make links clickable (Linear issues, Things tasks, emails)
+3. **格式規則**：
+- 不要使用表格——使用自然的散文和項目符號
+- 使用 **粗體** 強調關鍵術語
+- 保持可掃描但溫暖，像是個人簡報
+- 讓連結可點擊（Linear 議題、Things 任務、郵件）
 
-4. **Write** to `~/Documents/Notes/life-pulse.md`
+4. **寫入**到 `~/Documents/Notes/life-pulse.md`
 
-5. Open the file when done: `open ~/Documents/Notes/life-pulse.md`
+5. 完成後開啟檔案：`open ~/Documents/Notes/life-pulse.md`
 ````
 
-All the raw data stays contained in fast and cheap subagent runs (they use `haiku`). The main agent only sees the synthesized summaries and assembles everything into a coherent, readable digest.
+所有原始資料都保留在快速且便宜的子代理執行中（它們使用 `haiku`）。主代理只看到綜合的摘要並將所有內容組裝成連貫、可讀的摘要。
 
-And because each subagent is a standalone file, I can invoke them directly to answer questions like "how's my health?" or "check my email".
+而且因為每個子代理是獨立的檔案，我可以直接呼叫它們來回答「我的健康狀況如何？」或「檢查我的郵件」這樣的問題。
 
-I've been reading my life pulse digest on my iPad every morning while sipping coffee for a while now, and it's been a great way to start the day.
+我已經在每天早上喝咖啡時在 iPad 上閱讀我的生活脈動摘要好一陣子了，這是開始一天的好方式。
 
-## Example: Dynamic Calendars
+## 範例：動態日曆
 
-Another cool pattern I use is having Claude **manage calendars that sync to my phone**. I use this for both real-world track days and sim racing leagues.
+另一個我使用的酷模式是讓 Claude **管理同步到我手機的日曆**。我用這個來處理真實賽道日和模擬賽車聯賽。
 
 ```
-YAML config → sync.py → .ics file → GitHub Gist → Google/Apple Calendar
+YAML 設定 → sync.py → .ics 檔案 → GitHub Gist → Google/Apple 日曆
 ```
 
-[GitHub Gist](https://gist.github.com/) URLs are stable, so calendar apps that subscribe to them auto-refresh when the content changes (with some delay).
+[GitHub Gist](https://gist.github.com/) URL 是穩定的，所以訂閱它們的日曆應用程式會在內容變更時自動更新（有些延遲）。
 
-I wanted to know about track days at circuits near me (Estoril, Portimão in Portugal). The problem: event info is scattered across multiple organizer websites, often in PDF flyers or image-based pages.
+我想知道我附近賽道（葡萄牙的 Estoril、Portimão）的賽道日。問題是：活動資訊分散在多個主辦方網站上，通常是 PDF 傳單或圖片頁面。
 
-So I asked Claude to build a scraper. It grew into a 36,000-line Python script (`racing-events.py`) that:
+所以我請 Claude 建立一個爬蟲。它發展成一個 36,000 行的 Python 腳本（`racing-events.py`），可以：
 
-1. **Scrapes multiple sources** - EuropaTrackdays, Driven.pt, Motor Sponsor, CRM Caterham
-2. **Uses Playwright** for JavaScript-heavy sites
-3. **Uses OCR and Claude Vision** for PDF flyers and image-based calendars
-4. **Outputs YAML** with structured event data
+1. **爬取多個來源** - EuropaTrackdays、Driven.pt、Motor Sponsor、CRM Caterham
+2. **使用 Playwright** 處理 JavaScript 密集型網站
+3. **使用 OCR 和 Claude Vision** 處理 PDF 傳單和圖片日曆
+4. **輸出 YAML** 結構化的活動資料
 
-YAML is a good format for this since it's easy to read and write, and I can also easily spot mistakes and manually edit it.
+YAML 是這個用途的好格式，因為它容易讀寫，我也可以輕鬆發現錯誤並手動編輯。
 
 ```yaml
-# calendars/track-days.yaml (auto-generated)
+# calendars/track-days.yaml（自動生成）
 gist:
   id: 12344asdasd257be07871234asddfg123
   filename: track_days.ics
 calendar:
-  name: "Fab • Track Days"
+  name: "Fab • 賽道日"
   timezone: Europe/Lisbon
 events:
   - date: "2026-01-11"
@@ -413,137 +413,137 @@ events:
     url: https://en.europatrackdays.com/trackday/29919/...
 ```
 
-The YAML is then synced to a Gist that my calendar subscribes to.
+YAML 然後同步到我日曆訂閱的 Gist。
 
-When I ask "update my track day calendar", Claude runs the scraper, updates the YAML, and syncs to the gist. My calendar refreshes automatically.
+當我說「更新我的賽道日日曆」時，Claude 執行爬蟲、更新 YAML 並同步到 gist。我的日曆自動更新。
 
-In fact, I asked Claude to create a `sync.py` script that converts YAML to iCalendar format and pushes to GitHub:
+事實上，我請 Claude 建立一個 `sync.py` 腳本，將 YAML 轉換為 iCalendar 格式並推送到 GitHub：
 
 ```bash
-# List available calendars
+# 列出可用的日曆
 calendars/sync.py list
 
-# Preview upcoming events
+# 預覽即將到來的活動
 calendars/sync.py preview sim-racing
 
-# Sync to gist (uses `gh` CLI)
+# 同步到 gist（使用 `gh` CLI）
 calendars/sync.py sync sim-racing
 ```
 
-I subscribed to these Gist URLs once in Google Calendar and Apple Calendar:
+我在 Google 日曆和 Apple 日曆中訂閱了這些 Gist URL 一次：
 
 ```
 https://gist.githubusercontent.com/linuz90/.../raw/sim_racing.ics
 https://gist.githubusercontent.com/linuz90/.../raw/track_days.ics
 ```
 
-Now when I message "add the Belgium race to my sim racing calendar for next Thursday", Claude:
+現在當我傳訊「把比利時比賽加到我的模擬賽車日曆下週四」時，Claude 會：
 
-1. Edits `sim-racing.yaml`
-2. Runs `sync.py sync sim-racing`
-3. The gist updates
-4. My phone calendar refreshes within minutes
+1. 編輯 `sim-racing.yaml`
+2. 執行 `sync.py sync sim-racing`
+3. Gist 更新
+4. 我手機的日曆在幾分鐘內更新
 
-I can manage my racing calendars from anywhere in the world, via Telegram.
+我可以透過 Telegram 從世界任何地方管理我的賽車日曆。
 
-## Example: Claude as a Researcher
+## 範例：Claude 作為研究員
 
-Another pattern I use all the time is having Claude do thorough research for me. Whether I'm comparing products, investigating a topic, or making a purchase decision, Claude searches multiple sources and synthesizes findings into a clear recommendation.
+另一個我經常使用的模式是讓 Claude 為我做深入研究。無論是比較產品、調查主題還是做購買決定，Claude 會搜尋多個來源並將發現綜合成清晰的建議。
 
-![Research example](../assets/demo-research.gif)
+![研究範例](../assets/demo-research.gif)
 
-The setup now uses a **`research` skill** that handles the entire workflow:
+設定現在使用一個 **`research` 技能**來處理整個工作流程：
 
 ```markdown
 ---
 name: research
-description: Research topics thoroughly using web search, Reddit, and Hacker News, then save findings to Notes. Use when asked to research, compare options, investigate a topic, or find pros/cons.
+description: 使用網路搜尋、Reddit 和 Hacker News 深入研究主題，然後將發現儲存到 Notes。當被要求研究、比較選項、調查主題或找優缺點時使用。
 allowed-tools: WebSearch, WebFetch, Bash(reddit.sh:*), Bash(hn.sh:*), Read, Write, Edit, Glob
 ---
 
-# Research Workflow
+# 研究工作流程
 
-**CRITICAL: Every research task MUST save results to `~/Documents/Notes/Research/` BEFORE responding.**
+**關鍵：每個研究任務必須在回應前將結果儲存到 `~/Documents/Notes/Research/`。**
 
-## Process
+## 流程
 
-1. **Check existing research** in `~/Documents/Notes/Research/` first
-2. **Search thoroughly** using multiple sources:
-   - WebSearch for general information
-   - Reddit for community insights
-   - Hacker News for tech/startup discussions
-3. **Synthesize** findings with clear recommendation
-4. **Save to file** - update if exists
+1. **先檢查現有研究**在 `~/Documents/Notes/Research/`
+2. **使用多個來源深入搜尋**：
+   - WebSearch 獲取一般資訊
+   - Reddit 獲取社群洞察
+   - Hacker News 獲取科技/創業討論
+3. **綜合**發現並給出清晰建議
+4. **儲存到檔案** - 如果存在則更新
 ```
 
-The skill includes scripts for community sources:
+技能包含社群來源的腳本：
 
-**Reddit** - Real-world opinions and experiences:
+**Reddit** - 真實世界的意見和經驗：
 
 ```bash
 reddit.sh top iRacing,simracing --time week --limit 10 --preview
 reddit.sh search "BMW M2 front splitter" --time all --limit 20 --preview
 ```
 
-**Hacker News** - Tech and startup discussions:
+**Hacker News** - 科技和創業討論：
 
 ```bash
-hn.sh top --limit 5 --min-score 100        # Top stories this week
-hn.sh search "startup pricing" --preview    # Search with comments
+hn.sh top --limit 5 --min-score 100        # 本週熱門文章
+hn.sh search "startup pricing" --preview    # 搜尋並包含評論
 ```
 
-The `--preview` flag includes full post content and top comments, which is where the real insights are.
+`--preview` 旗標包含完整文章內容和熱門評論，這才是真正洞察所在。
 
-When I message something like "research upgrade options for my sim racing rig", Claude:
+當我傳訊「研究我模擬賽車設備的升級選項」時，Claude 會：
 
-1. **Checks existing research** - looks in `Research/` for any previous files on the topic
-2. **Searches the web** - uses web search for product reviews and expert opinions
-3. **Searches Reddit and HN** - finds community discussions with real-world experiences
-4. **Synthesizes everything** - combines specs, reviews, and community feedback
-5. **Saves the research** - creates a dated file like `2025-12-30-sim-racing-rig-upgrade.md`
+1. **檢查現有研究** - 在 `Research/` 中查找任何關於該主題的先前檔案
+2. **搜尋網路** - 使用網路搜尋獲取產品評測和專家意見
+3. **搜尋 Reddit 和 HN** - 找到有真實世界經驗的社群討論
+4. **綜合所有內容** - 結合規格、評測和社群反饋
+5. **儲存研究** - 建立像 `2025-12-30-sim-racing-rig-upgrade.md` 這樣的日期檔案
 
-The result is a comprehensive research document with clear recommendations and links to all sources. I love that I can trigger this anywhere and anytime.
+結果是一份包含清晰建議和所有來源連結的全面研究文件。我喜歡可以隨時隨地觸發這個功能。
 
-## Example: Claude as a Co-Worker
+## 範例：Claude 作為同事
 
-Since integrating **Slack, Linear, and Notion** into my setup, Claude can act as a co-worker who keeps track of what's happening at work.
+自從整合了 **Slack、Linear 和 Notion** 到我的設定後，Claude 可以作為追蹤工作動態的同事。
 
-When I've been away for a few days, I can ask things like:
+當我離開幾天後，我可以問：
 
-- "What are my teammates up to? Any blockers?"
-- "Catch me up on the #progress-updates channel"
-- "What's the latest on the API v2 project?"
+- 「我的隊友在做什麼？有阻塞項嗎？」
+- 「幫我了解 #progress-updates 頻道的最新情況」
+- 「API v2 專案的最新進展是什麼？」
 
-Claude checks Slack for recent messages and threads, Linear for issue updates and blockers, and Notion for any new specs or docs — then summarizes what's relevant to me.
+Claude 會檢查 Slack 的最近訊息和討論串、Linear 的議題更新和阻塞項、Notion 的新規格或文件——然後總結與我相關的內容。
 
-### Setting Up Slack Access
+### 設定 Slack 存取
 
-To make this work, you need to create a Slack app with the right permissions:
+要讓這個運作，你需要建立一個有適當權限的 Slack 應用程式：
 
-1. **Create a Slack app** at [api.slack.com/apps](https://api.slack.com/apps)
-2. **Add OAuth scopes** under "OAuth & Permissions":
-   - `channels:history` - Read messages in public channels
-   - `channels:read` - List channels
-   - `groups:history` - Read messages in private channels (optional)
-   - `groups:read` - List private channels (optional)
-3. **Install the app** to your workspace and copy the Bot User OAuth Token
-4. **Invite the bot** to channels you want it to read (use `/invite @YourBotName` in each channel)
+1. **建立 Slack 應用程式**在 [api.slack.com/apps](https://api.slack.com/apps)
+2. **新增 OAuth 範圍**在「OAuth & Permissions」下：
+   - `channels:history` - 讀取公開頻道的訊息
+   - `channels:read` - 列出頻道
+   - `groups:history` - 讀取私人頻道的訊息（選用）
+   - `groups:read` - 列出私人頻道（選用）
+3. **安裝應用程式**到你的工作區並複製 Bot User OAuth Token
+4. **邀請機器人**到你想讓它讀取的頻道（在每個頻道使用 `/invite @YourBotName`）
 
-The bot can only see messages in channels it's been invited to, which gives you control over what Claude can access.
+機器人只能看到它被邀請的頻道中的訊息，這讓你可以控制 Claude 可以存取什麼。
 
-### The CLI
+### CLI
 
-I asked Claude to build a simple Slack CLI:
+我請 Claude 建立一個簡單的 Slack CLI：
 
 ```bash
-bun run cli/integrations/slack.ts channels              # List joined channels
-bun run cli/integrations/slack.ts messages general      # Recent messages from #general
-bun run cli/integrations/slack.ts recent                # Recent across all channels
-bun run cli/integrations/slack.ts thread <url>          # Full thread from a Slack URL
+bun run cli/integrations/slack.ts channels              # 列出已加入的頻道
+bun run cli/integrations/slack.ts messages general      # #general 的最近訊息
+bun run cli/integrations/slack.ts recent                # 所有頻道的最近訊息
+bun run cli/integrations/slack.ts thread <url>          # 從 Slack URL 取得完整討論串
 ```
 
-Combined with Linear and Notion access, Claude can give me a complete picture of what's been happening at work — all from a quick Telegram message while I'm grabbing coffee.
+結合 Linear 和 Notion 存取，Claude 可以給我工作動態的完整全貌——只需在我喝咖啡時發一則 Telegram 訊息。
 
-In the end, it's up to you wether to create scripts, skills, commands, or any combination of them to empower your agent to assist you. Sky's the limits, and seems like this is evolving every day now.
+最終，建立腳本、技能、指令或任何組合來增強你的代理協助你，取決於你。天空是極限，而且這似乎每天都在演進。
 
-I'd love to know what you're building, [hit me up on X](https://x.com/linuz90).
+我很想知道你在建立什麼，[在 X 上聯繫我](https://x.com/linuz90)。
