@@ -1,108 +1,79 @@
 ---
 name: memory
 description: |
-  長期記憶系統。漸進式觸發關鍵字：
-  第一層（分類）："偏好"、"專案"、"知識"、"待辦"
-  第二層（項目）：各分類內的具體主題，見 index.json 的 keywords
-  寫入觸發："記住"、"記一下"、"幫我記"
+  長期記憶系統。漸進式揭露：
+  第一層："偏好"、"專案"、"知識"、"待辦"
+  第二層：各分類子目錄內的 .md 檔案名稱
+  寫入："記住"、"記一下"、"幫我記"
 allowed-tools: Read, Write, Edit, Grep, Glob
 ---
 
 # Memory Skill
 
-長期記憶系統，用於儲存和管理使用者的偏好、專案知識、待辦事項等資訊。
+長期記憶系統，使用目錄結構實現漸進式揭露。
 
-## 記憶分類
+## 目錄結構
 
-| 分類 | 用途 | 檔案 |
-|------|------|------|
-| preferences | 使用者偏好設定 | categories/preferences.md |
-| projects | 專案相關知識 | categories/projects.md |
-| knowledge | 學習的知識 | categories/knowledge.md |
-| todos | 待辦事項 | categories/todos.md |
-| context | 背景資訊 | categories/context.md |
+```
+memory/
+├── SKILL.md              # 本檔案（第一層入口）
+├── index.json            # 記憶索引
+├── categories/
+│   ├── preferences/      # 偏好分類
+│   │   ├── SKILL.md      # 第一層：分類說明
+│   │   └── {項目}.md     # 第二層：具體偏好
+│   ├── projects/         # 專案分類
+│   │   ├── SKILL.md
+│   │   └── {專案名}.md   # 第二層：各專案知識
+│   ├── knowledge/        # 知識分類
+│   │   ├── SKILL.md
+│   │   └── {主題}.md     # 第二層：各知識主題
+│   └── todos/            # 待辦分類
+│       ├── SKILL.md
+│       └── {類別}.md     # 第二層：各類待辦
+└── archives/
+    └── compact_YYYY-MM.md
+```
+
+## 漸進式揭露機制
+
+### 第一層觸發（分類）
+使用者提到分類關鍵字時，載入該分類的 SKILL.md：
+- 「偏好」→ categories/preferences/SKILL.md
+- 「專案」→ categories/projects/SKILL.md
+- 「知識」→ categories/knowledge/SKILL.md
+- 「待辦」→ categories/todos/SKILL.md
+
+### 第二層觸發（具體項目）
+使用者提到具體項目名稱時，載入對應的 .md 檔案：
+- 「claude-telegram-bot」→ categories/projects/claude-telegram-bot.md
+- 「金融」→ categories/knowledge/金融.md
+- 「高頻交易」→ categories/knowledge/高頻交易.md
 
 ## 操作指引
 
 ### 讀取記憶
-1. 先讀取 `index.json` 查看分類摘要和關鍵字
-2. 根據需求載入相關分類檔案
-3. 只載入需要的分類，避免浪費 token
+1. 根據關鍵字判斷分類
+2. 載入對應的 SKILL.md 或具體項目檔案
+3. 只載入需要的檔案，避免浪費 token
 
 ### 寫入記憶
-1. 更新對應的分類 `.md` 檔案
-2. 更新 `index.json` 的統計資訊
-3. 記錄更新時間和關鍵字
+1. 判斷記憶屬於哪個分類
+2. 在對應分類目錄建立或更新 .md 檔案
+3. 檔名使用有意義的關鍵字（作為第二層觸發詞）
+4. 更新 index.json 統計資訊
 
-### 新增分類
-當記憶不適合現有分類時，可建立新分類：
-1. 在 `categories/` 建立 `{new_category}.md`
-2. 在 `index.json` 的 `categories` 新增該分類
-3. 遵循相同的 Markdown 格式
+### 新增項目
+在對應分類目錄建立新的 .md 檔案，檔名即為第二層關鍵字。
 
-### COMPACT 壓縮
-當記憶過多時執行壓縮：
-1. 讀取所有分類
-2. 提取核心資訊、移除過時或重複內容
-3. 歷史摘要寫入 `archives/compact_YYYY-MM.md`
-4. 精簡各分類檔案
-5. 更新 `index.json` 的 `last_compact`
+## 記憶檔案格式
 
-## 記憶格式規範
-
-### 分類檔案格式
 ```markdown
-# [分類名稱]
+# [項目名稱]
 
+> 建立日期: YYYY-MM-DD
 > 最後更新: YYYY-MM-DD
-> 記憶數量: N
 
-## [主題]
-- **[項目]**: [內容]
-- 日期: YYYY-MM-DD
+## 內容
+...
 ```
-
-### index.json 格式
-```json
-{
-  "version": "1.0",
-  "last_updated": "ISO時間",
-  "last_compact": "ISO時間",
-  "categories": {
-    "分類名": {
-      "count": 數量,
-      "last_updated": "ISO時間",
-      "keywords": ["關鍵字"]
-    }
-  },
-  "total_entries": 總數,
-  "dynamic_categories": true
-}
-```
-
-## 觸發條件
-
-### 漸進式揭露機制
-
-**第一層關鍵字（分類名稱）**
-- 「偏好」→ 讀取 preferences
-- 「專案」→ 讀取 projects
-- 「知識」→ 讀取 knowledge
-- 「待辦」→ 讀取 todos
-
-**第二層關鍵字（具體項目）**
-儲存在 index.json 各分類的 keywords 陣列中，例如：
-- projects.keywords: ["claude-telegram-bot", "trading-bot", ...]
-- knowledge.keywords: ["金融", "交易", "高頻交易", "健康", ...]
-
-當使用者提到第二層關鍵字時，自動載入對應分類的記憶。
-
-### 寫入觸發
-- 使用者提到「記住」、「記一下」、「幫我記」→ 儲存新記憶
-- 儲存時同步更新 index.json 的 keywords（加入新的第二層關鍵字）
-
-### 新對話流程
-1. 檢查使用者訊息是否包含第一層或第二層關鍵字
-2. 若有，先讀取 index.json 確認記憶狀態
-3. 載入匹配分類的記憶內容
-4. 基於記憶內容繼續回應使用者

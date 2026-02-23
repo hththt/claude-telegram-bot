@@ -5,30 +5,20 @@
   "categories": {
     "preferences": {
       "count": 0,
-      "last_updated": "",
-      "keywords": []
+      "last_updated": ""
     },
     "projects": {
       "count": 0,
-      "last_updated": "",
-      "keywords": []
+      "last_updated": ""
     },
     "knowledge": {
       "count": 0,
-      "last_updated": "",
-      "keywords": []
+      "last_updated": ""
     },
     "todos": {
       "count": 0,
-      "last_updated": "",
-      "keywords": []
-    },
-    "context": {
-      "count": 0,
-      "last_updated": "",
-      "keywords": []
+      "last_updated": ""
     }
   },
-  "total_entries": 0,
-  "dynamic_categories": true
+  "total_entries": 0
 }
