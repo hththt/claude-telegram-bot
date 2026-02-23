@@ -73,7 +73,7 @@ export function createMediaGroupBuffer(config: MediaGroupConfig) {
         await group.ctx.api.editMessageText(
           group.statusMsg.chat.id,
           group.statusMsg.message_id,
-          `${config.emoji} Processing ${group.items.length} ${config.itemLabelPlural}...`
+          `${config.emoji} 正在處理 ${group.items.length} 個${config.itemLabelPlural}...`
         );
       } catch (error) {
         console.debug("Failed to update status message:", error);
@@ -121,7 +121,7 @@ export function createMediaGroupBuffer(config: MediaGroupConfig) {
       if (!allowed) {
         await auditLogRateLimit(userId, username, retryAfter!);
         await ctx.reply(
-          `⏳ Rate limited. Please wait ${retryAfter!.toFixed(1)} seconds.`
+          `⏳ 已達速率限制。請等待 ${retryAfter!.toFixed(1)} 秒。`
         );
         return false;
       }
@@ -129,7 +129,7 @@ export function createMediaGroupBuffer(config: MediaGroupConfig) {
       // Create new group
       console.log(`Receiving ${config.itemLabel} album from @${username}`);
       const statusMsg = await ctx.reply(
-        `${config.emoji} Receiving ${config.itemLabelPlural}...`
+        `${config.emoji} 正在接收${config.itemLabelPlural}...`
       );
 
       pendingGroups.set(mediaGroupId, {
@@ -197,9 +197,9 @@ export async function handleProcessingError(
     // Only show "Query stopped" if it was an explicit stop, not an interrupt from a new message
     const wasInterrupt = session.consumeInterruptFlag();
     if (!wasInterrupt) {
-      await ctx.reply("🛑 Query stopped.");
+      await ctx.reply("🛑 查詢已停止。");
     }
   } else {
-    await ctx.reply(`❌ Error: ${errorStr.slice(0, 200)}`);
+    await ctx.reply(`❌ 錯誤：${errorStr.slice(0, 200)}`);
   }
 }

@@ -57,7 +57,7 @@ export async function processAudioFile(
 ): Promise<void> {
   if (!TRANSCRIPTION_AVAILABLE) {
     await ctx.reply(
-      "Voice transcription is not configured. Set OPENAI_API_KEY in .env"
+      "語音轉錄功能未設定。請在 .env 中設定 OPENAI_API_KEY"
     );
     return;
   }
@@ -67,14 +67,14 @@ export async function processAudioFile(
 
   try {
     // Transcribe
-    const statusMsg = await ctx.reply("🎤 Transcribing audio...");
+    const statusMsg = await ctx.reply("🎤 正在轉錄音訊...");
 
     const transcript = await transcribeVoice(filePath);
     if (!transcript) {
       await ctx.api.editMessageText(
         chatId,
         statusMsg.message_id,
-        "❌ Transcription failed."
+        "❌ 轉錄失敗。"
       );
       return;
     }
@@ -88,7 +88,7 @@ export async function processAudioFile(
     await ctx.api.editMessageText(
       chatId,
       statusMsg.message_id,
-      `🎤 "${displayTranscript}"`
+      `🎤 「${displayTranscript}」`
     );
 
     // Build prompt: transcript + optional caption
@@ -127,10 +127,10 @@ export async function processAudioFile(
     if (String(error).includes("abort") || String(error).includes("cancel")) {
       const wasInterrupt = session.consumeInterruptFlag();
       if (!wasInterrupt) {
-        await ctx.reply("🛑 Query stopped.");
+        await ctx.reply("🛑 查詢已停止。");
       }
     } else {
-      await ctx.reply(`❌ Error: ${String(error).slice(0, 200)}`);
+      await ctx.reply(`❌ 錯誤：${String(error).slice(0, 200)}`);
     }
   } finally {
     stopProcessing();
@@ -160,7 +160,7 @@ export async function handleAudio(ctx: Context): Promise<void> {
 
   // 1. Authorization check
   if (!isAuthorized(userId, ALLOWED_USERS)) {
-    await ctx.reply("Unauthorized. Contact the bot owner for access.");
+    await ctx.reply("未授權。請聯繫機器人擁有者取得存取權限。");
     return;
   }
 
@@ -169,7 +169,7 @@ export async function handleAudio(ctx: Context): Promise<void> {
   if (!allowed) {
     await auditLogRateLimit(userId, username, retryAfter!);
     await ctx.reply(
-      `⏳ Rate limited. Please wait ${retryAfter!.toFixed(1)} seconds.`
+      `⏳ 已達速率限制。請等待 ${retryAfter!.toFixed(1)} 秒。`
     );
     return;
   }
@@ -191,7 +191,7 @@ export async function handleAudio(ctx: Context): Promise<void> {
     await Bun.write(audioPath, buffer);
   } catch (error) {
     console.error("Failed to download audio:", error);
-    await ctx.reply("❌ Failed to download audio file.");
+    await ctx.reply("❌ 下載音訊檔案失敗。");
     return;
   }
 

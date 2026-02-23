@@ -29,7 +29,7 @@ export async function handleText(ctx: Context): Promise<void> {
 
   // 1. Authorization check
   if (!isAuthorized(userId, ALLOWED_USERS)) {
-    await ctx.reply("Unauthorized. Contact the bot owner for access.");
+    await ctx.reply("未授權。請聯繫機器人擁有者取得存取權限。");
     return;
   }
 
@@ -44,7 +44,7 @@ export async function handleText(ctx: Context): Promise<void> {
   if (!allowed) {
     await auditLogRateLimit(userId, username, retryAfter!);
     await ctx.reply(
-      `⏳ Rate limited. Please wait ${retryAfter!.toFixed(1)} seconds.`
+      `⏳ 已達速率限制。請等待 ${retryAfter!.toFixed(1)} 秒。`
     );
     return;
   }
@@ -106,7 +106,7 @@ export async function handleText(ctx: Context): Promise<void> {
           `Claude Code crashed, retrying (attempt ${attempt + 2}/${MAX_RETRIES + 1})...`
         );
         await session.kill(); // Clear corrupted session
-        await ctx.reply(`⚠️ Claude crashed, retrying...`);
+        await ctx.reply(`⚠️ Claude 當機，正在重試...`);
         // Reset state for retry
         state = new StreamingState();
         statusCallback = createStatusCallback(ctx, state);
@@ -121,10 +121,10 @@ export async function handleText(ctx: Context): Promise<void> {
         // Only show "Query stopped" if it was an explicit stop, not an interrupt from a new message
         const wasInterrupt = session.consumeInterruptFlag();
         if (!wasInterrupt) {
-          await ctx.reply("🛑 Query stopped.");
+          await ctx.reply("🛑 查詢已停止。");
         }
       } else {
-        await ctx.reply(`❌ Error: ${errorStr.slice(0, 200)}`);
+        await ctx.reply(`❌ 錯誤：${errorStr.slice(0, 200)}`);
       }
       break; // Exit loop after handling error
     }

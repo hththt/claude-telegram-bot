@@ -48,8 +48,8 @@ const MAX_ARCHIVE_CONTENT = 50000;
 // Create document-specific media group buffer
 const documentBuffer = createMediaGroupBuffer({
   emoji: "📄",
-  itemLabel: "document",
-  itemLabelPlural: "documents",
+  itemLabel: "文件",
+  itemLabelPlural: "文件",
 });
 
 /**
@@ -95,7 +95,7 @@ async function extractText(
       return result.text();
     } catch (error) {
       console.error("PDF parsing failed:", error);
-      return "[PDF parsing failed - ensure pdftotext is installed: brew install poppler]";
+      return "[PDF 解析失敗 - 請確保已安裝 pdftotext：brew install poppler]";
     }
   }
 
@@ -106,7 +106,7 @@ async function extractText(
     return text.slice(0, 100000);
   }
 
-  throw new Error(`Unsupported file type: ${extension || mimeType}`);
+  throw new Error(`不支援的檔案類型：${extension || mimeType}`);
 }
 
 /**
@@ -145,7 +145,7 @@ async function extractArchive(
   } else if (ext === ".tar" || ext === ".tar.gz" || ext === ".tgz") {
     await Bun.$`tar -xf ${archivePath} -C ${extractDir}`.quiet();
   } else {
-    throw new Error(`Unknown archive type: ${ext}`);
+    throw new Error(`未知的壓縮檔類型：${ext}`);
   }
 
   return extractDir;
@@ -221,7 +221,7 @@ async function processArchive(
   const typing = startTypingIndicator(ctx);
 
   // Show extraction progress
-  const statusMsg = await ctx.reply(`📦 Extracting <b>${fileName}</b>...`, {
+  const statusMsg = await ctx.reply(`📦 正在解壓 <b>${fileName}</b>...`, {
     parse_mode: "HTML",
   });
 
@@ -236,16 +236,16 @@ async function processArchive(
     await ctx.api.editMessageText(
       statusMsg.chat.id,
       statusMsg.message_id,
-      `📦 Extracted <b>${fileName}</b>: ${tree.length} files, ${contents.length} readable`,
+      `📦 已解壓 <b>${fileName}</b>：${tree.length} 個檔案，${contents.length} 個可讀取`,
       { parse_mode: "HTML" }
     );
 
     // Build prompt
-    const treeStr = tree.length > 0 ? tree.join("\n") : "(empty)";
+    const treeStr = tree.length > 0 ? tree.join("\n") : "(空)";
     const contentsStr =
       contents.length > 0
         ? contents.map((c) => `--- ${c.name} ---\n${c.content}`).join("\n\n")
-        : "(no readable text files)";
+        : "(無可讀取的文字檔案)";
 
     const prompt = caption
       ? `Archive: ${fileName}\n\nFile tree (${tree.length} files):\n${treeStr}\n\nExtracted contents:\n${contentsStr}\n\n---\n\n${caption}`
@@ -253,7 +253,7 @@ async function processArchive(
 
     // Set conversation title (if new session)
     if (!session.isActive) {
-      const rawTitle = caption || `[Archivio: ${fileName}]`;
+      const rawTitle = caption || `[壓縮檔：${fileName}]`;
       const title =
         rawTitle.length > 50 ? rawTitle.slice(0, 47) + "..." : rawTitle;
       session.conversationTitle = title;
@@ -298,7 +298,7 @@ async function processArchive(
       // Ignore
     }
     await ctx.reply(
-      `❌ Failed to process archive: ${String(error).slice(0, 100)}`
+      `❌ 處理壓縮檔失敗：${String(error).slice(0, 100)}`
     );
   } finally {
     stopProcessing();
@@ -338,8 +338,8 @@ async function processDocuments(
 
   // Set conversation title (if new session)
   if (!session.isActive) {
-    const docName = documents[0]?.name || "[Documento]";
-    const rawTitle = caption || `[Documento: ${docName}]`;
+    const docName = documents[0]?.name || "[文件]";
+    const rawTitle = caption || `[文件：${docName}]`;
     const title =
       rawTitle.length > 50 ? rawTitle.slice(0, 47) + "..." : rawTitle;
     session.conversationTitle = title;
@@ -402,7 +402,7 @@ async function processDocumentPaths(
   }
 
   if (documents.length === 0) {
-    await ctx.reply("❌ Failed to extract any documents.");
+    await ctx.reply("❌ 無法解析任何文件。");
     return;
   }
 
@@ -425,13 +425,13 @@ export async function handleDocument(ctx: Context): Promise<void> {
 
   // 1. Authorization check
   if (!isAuthorized(userId, ALLOWED_USERS)) {
-    await ctx.reply("Unauthorized. Contact the bot owner for access.");
+    await ctx.reply("未授權。請聯繫機器人擁有者取得存取權限。");
     return;
   }
 
   // 2. Check file size
   if (doc.file_size && doc.file_size > MAX_FILE_SIZE) {
-    await ctx.reply("❌ File too large. Maximum size is 10MB.");
+    await ctx.reply("❌ 檔案過大。最大限制為 10MB。");
     return;
   }
 
@@ -452,7 +452,7 @@ export async function handleDocument(ctx: Context): Promise<void> {
     if (!allowed) {
       await auditLogRateLimit(userId, username, retryAfter!);
       await ctx.reply(
-        `⏳ Rate limited. Please wait ${retryAfter!.toFixed(1)} seconds.`
+        `⏳ 已達速率限制。請等待 ${retryAfter!.toFixed(1)} 秒。`
       );
       return;
     }
@@ -463,7 +463,7 @@ export async function handleDocument(ctx: Context): Promise<void> {
       docPath = await downloadDocument(ctx);
     } catch (error) {
       console.error("Failed to download audio document:", error);
-      await ctx.reply("❌ Failed to download audio file.");
+      await ctx.reply("❌ 下載音訊檔案失敗。");
       return;
     }
 
@@ -473,10 +473,10 @@ export async function handleDocument(ctx: Context): Promise<void> {
 
   if (!isPdf && !isText && !isArchiveFile) {
     await ctx.reply(
-      `❌ Unsupported file type: ${extension || doc.mime_type}\n\n` +
-        `Supported: PDF, archives (${ARCHIVE_EXTENSIONS.join(
-          ", "
-        )}), ${TEXT_EXTENSIONS.join(", ")}`
+      `❌ 不支援的檔案類型：${extension || doc.mime_type}\n\n` +
+        `支援的格式：PDF、壓縮檔（${ARCHIVE_EXTENSIONS.join(
+          "、"
+        )}）、${TEXT_EXTENSIONS.join("、")}`
     );
     return;
   }
@@ -487,7 +487,7 @@ export async function handleDocument(ctx: Context): Promise<void> {
     docPath = await downloadDocument(ctx);
   } catch (error) {
     console.error("Failed to download document:", error);
-    await ctx.reply("❌ Failed to download document.");
+    await ctx.reply("❌ 下載文件失敗。");
     return;
   }
 
@@ -498,7 +498,7 @@ export async function handleDocument(ctx: Context): Promise<void> {
     if (!allowed) {
       await auditLogRateLimit(userId, username, retryAfter!);
       await ctx.reply(
-        `⏳ Rate limited. Please wait ${retryAfter!.toFixed(1)} seconds.`
+        `⏳ 已達速率限制。請等待 ${retryAfter!.toFixed(1)} 秒。`
       );
       return;
     }
@@ -523,7 +523,7 @@ export async function handleDocument(ctx: Context): Promise<void> {
     if (!allowed) {
       await auditLogRateLimit(userId, username, retryAfter!);
       await ctx.reply(
-        `⏳ Rate limited. Please wait ${retryAfter!.toFixed(1)} seconds.`
+        `⏳ 已達速率限制。請等待 ${retryAfter!.toFixed(1)} 秒。`
       );
       return;
     }
@@ -541,7 +541,7 @@ export async function handleDocument(ctx: Context): Promise<void> {
     } catch (error) {
       console.error("Failed to extract document:", error);
       await ctx.reply(
-        `❌ Failed to process document: ${String(error).slice(0, 100)}`
+        `❌ 處理文件失敗：${String(error).slice(0, 100)}`
       );
     }
     return;

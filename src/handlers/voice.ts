@@ -30,14 +30,14 @@ export async function handleVoice(ctx: Context): Promise<void> {
 
   // 1. Authorization check
   if (!isAuthorized(userId, ALLOWED_USERS)) {
-    await ctx.reply("Unauthorized. Contact the bot owner for access.");
+    await ctx.reply("未授權。請聯繫機器人擁有者取得存取權限。");
     return;
   }
 
   // 2. Check if transcription is available
   if (!TRANSCRIPTION_AVAILABLE) {
     await ctx.reply(
-      "Voice transcription is not configured. Set OPENAI_API_KEY in .env"
+      "語音轉錄功能未設定。請在 .env 中設定 OPENAI_API_KEY"
     );
     return;
   }
@@ -47,7 +47,7 @@ export async function handleVoice(ctx: Context): Promise<void> {
   if (!allowed) {
     await auditLogRateLimit(userId, username, retryAfter!);
     await ctx.reply(
-      `⏳ Rate limited. Please wait ${retryAfter!.toFixed(1)} seconds.`
+      `⏳ 已達速率限制。請等待 ${retryAfter!.toFixed(1)} 秒。`
     );
     return;
   }
@@ -74,14 +74,14 @@ export async function handleVoice(ctx: Context): Promise<void> {
     await Bun.write(voicePath, buffer);
 
     // 7. Transcribe
-    const statusMsg = await ctx.reply("🎤 Transcribing...");
+    const statusMsg = await ctx.reply("🎤 正在轉錄...");
 
     const transcript = await transcribeVoice(voicePath);
     if (!transcript) {
       await ctx.api.editMessageText(
         chatId,
         statusMsg.message_id,
-        "❌ Transcription failed."
+        "❌ 轉錄失敗。"
       );
       stopProcessing();
       return;
@@ -96,7 +96,7 @@ export async function handleVoice(ctx: Context): Promise<void> {
     await ctx.api.editMessageText(
       chatId,
       statusMsg.message_id,
-      `🎤 "${displayTranscript}"`
+      `🎤 「${displayTranscript}」`
     );
 
     // 9. Set conversation title from transcript (if new session)
@@ -129,10 +129,10 @@ export async function handleVoice(ctx: Context): Promise<void> {
       // Only show "Query stopped" if it was an explicit stop, not an interrupt from a new message
       const wasInterrupt = session.consumeInterruptFlag();
       if (!wasInterrupt) {
-        await ctx.reply("🛑 Query stopped.");
+        await ctx.reply("🛑 查詢已停止。");
       }
     } else {
-      await ctx.reply(`❌ Error: ${String(error).slice(0, 200)}`);
+      await ctx.reply(`❌ 錯誤：${String(error).slice(0, 200)}`);
     }
   } finally {
     stopProcessing();

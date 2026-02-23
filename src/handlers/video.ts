@@ -57,14 +57,14 @@ export async function handleVideo(ctx: Context): Promise<void> {
 
   // 1. Authorization check
   if (!isAuthorized(userId, ALLOWED_USERS)) {
-    await ctx.reply("Unauthorized. Contact the bot owner for access.");
+    await ctx.reply("未授權。請聯繫機器人擁有者取得存取權限。");
     return;
   }
 
   // 2. Check file size
   if (video.file_size && video.file_size > MAX_VIDEO_SIZE) {
     await ctx.reply(
-      `❌ Video too large. Maximum size is ${MAX_VIDEO_SIZE / 1024 / 1024}MB.`
+      `❌ 影片過大。最大限制為 ${MAX_VIDEO_SIZE / 1024 / 1024}MB。`
     );
     return;
   }
@@ -74,7 +74,7 @@ export async function handleVideo(ctx: Context): Promise<void> {
   if (!allowed) {
     await auditLogRateLimit(userId, username, retryAfter!);
     await ctx.reply(
-      `⏳ Rate limited. Please wait ${retryAfter!.toFixed(1)} seconds.`
+      `⏳ 已達速率限制。請等待 ${retryAfter!.toFixed(1)} 秒。`
     );
     return;
   }
@@ -83,7 +83,7 @@ export async function handleVideo(ctx: Context): Promise<void> {
 
   // 4. Download video
   let videoPath: string;
-  const statusMsg = await ctx.reply("📹 Downloading video...");
+  const statusMsg = await ctx.reply("📹 正在下載影片...");
 
   try {
     videoPath = await downloadVideo(ctx);
@@ -92,7 +92,7 @@ export async function handleVideo(ctx: Context): Promise<void> {
     await ctx.api.editMessageText(
       chatId,
       statusMsg.message_id,
-      "❌ Failed to download video."
+      "❌ 下載影片失敗。"
     );
     return;
   }
@@ -106,7 +106,7 @@ export async function handleVideo(ctx: Context): Promise<void> {
     await ctx.api.editMessageText(
       chatId,
       statusMsg.message_id,
-      "📹 Processing video..."
+      "📹 正在處理影片..."
     );
 
     // Build prompt with video path
@@ -116,7 +116,7 @@ export async function handleVideo(ctx: Context): Promise<void> {
 
     // Set conversation title (if new session)
     if (!session.isActive) {
-      const rawTitle = caption || "[Video]";
+      const rawTitle = caption || "[影片]";
       const title =
         rawTitle.length > 50 ? rawTitle.slice(0, 47) + "..." : rawTitle;
       session.conversationTitle = title;

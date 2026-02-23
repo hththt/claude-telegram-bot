@@ -15,8 +15,8 @@ import { createMediaGroupBuffer, handleProcessingError } from "./media-group";
 // Create photo-specific media group buffer
 const photoBuffer = createMediaGroupBuffer({
   emoji: "📷",
-  itemLabel: "photo",
-  itemLabelPlural: "photos",
+  itemLabel: "照片",
+  itemLabelPlural: "照片",
 });
 
 /**
@@ -74,7 +74,7 @@ async function processPhotos(
 
   // Set conversation title (if new session)
   if (!session.isActive) {
-    const rawTitle = caption || "[Foto]";
+    const rawTitle = caption || "[照片]";
     const title =
       rawTitle.length > 50 ? rawTitle.slice(0, 47) + "..." : rawTitle;
     session.conversationTitle = title;
@@ -121,7 +121,7 @@ export async function handlePhoto(ctx: Context): Promise<void> {
 
   // 1. Authorization check
   if (!isAuthorized(userId, ALLOWED_USERS)) {
-    await ctx.reply("Unauthorized. Contact the bot owner for access.");
+    await ctx.reply("未授權。請聯繫機器人擁有者取得存取權限。");
     return;
   }
 
@@ -134,13 +134,13 @@ export async function handlePhoto(ctx: Context): Promise<void> {
     if (!allowed) {
       await auditLogRateLimit(userId, username, retryAfter!);
       await ctx.reply(
-        `⏳ Rate limited. Please wait ${retryAfter!.toFixed(1)} seconds.`
+        `⏳ 已達速率限制。請等待 ${retryAfter!.toFixed(1)} 秒。`
       );
       return;
     }
 
     // Show status immediately
-    statusMsg = await ctx.reply("📷 Processing image...");
+    statusMsg = await ctx.reply("📷 正在處理圖片...");
   }
 
   // 3. Download photo
@@ -154,14 +154,14 @@ export async function handlePhoto(ctx: Context): Promise<void> {
         await ctx.api.editMessageText(
           statusMsg.chat.id,
           statusMsg.message_id,
-          "❌ Failed to download photo."
+          "❌ 下載照片失敗。"
         );
       } catch (editError) {
         console.debug("Failed to edit status message:", editError);
-        await ctx.reply("❌ Failed to download photo.");
+        await ctx.reply("❌ 下載照片失敗。");
       }
     } else {
-      await ctx.reply("❌ Failed to download photo.");
+      await ctx.reply("❌ 下載照片失敗。");
     }
     return;
   }
