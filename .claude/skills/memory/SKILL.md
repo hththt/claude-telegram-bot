@@ -1,12 +1,10 @@
 ---
 name: memory
 description: |
-  長期記憶系統。觸發關鍵字：
-  - "記住"、"記一下"、"幫我記"
-  - "偏好"、"preferences"
-  - "專案"、"projects"
-  - "知識"、"knowledge"
-  - "待辦"、"todos"
+  長期記憶系統。漸進式觸發關鍵字：
+  第一層（分類）："偏好"、"專案"、"知識"、"待辦"
+  第二層（項目）：各分類內的具體主題，見 index.json 的 keywords
+  寫入觸發："記住"、"記一下"、"幫我記"
 allowed-tools: Read, Write, Edit, Grep, Glob
 ---
 
@@ -84,18 +82,27 @@ allowed-tools: Read, Write, Edit, Grep, Glob
 
 ## 觸發條件
 
-### 寫入觸發
-- 使用者提到「記住」、「記一下」、「幫我記」→ 儲存新記憶到對應分類
+### 漸進式揭露機制
 
-### 讀取觸發（分類關鍵字）
-當使用者提到以下關鍵字時，先載入對應記憶再繼續對話：
-- 「偏好」、「preferences」→ 讀取 preferences
-- 「專案」、「projects」→ 讀取 projects
-- 「知識」、「knowledge」→ 讀取 knowledge
-- 「待辦」、「todos」→ 讀取 todos
+**第一層關鍵字（分類名稱）**
+- 「偏好」→ 讀取 preferences
+- 「專案」→ 讀取 projects
+- 「知識」→ 讀取 knowledge
+- 「待辦」→ 讀取 todos
+
+**第二層關鍵字（具體項目）**
+儲存在 index.json 各分類的 keywords 陣列中，例如：
+- projects.keywords: ["claude-telegram-bot", "trading-bot", ...]
+- knowledge.keywords: ["金融", "交易", "高頻交易", "健康", ...]
+
+當使用者提到第二層關鍵字時，自動載入對應分類的記憶。
+
+### 寫入觸發
+- 使用者提到「記住」、「記一下」、「幫我記」→ 儲存新記憶
+- 儲存時同步更新 index.json 的 keywords（加入新的第二層關鍵字）
 
 ### 新對話流程
-在新 session 開始時，若使用者訊息包含任何分類關鍵字：
-1. 先讀取 index.json 確認記憶狀態
-2. 載入相關分類的記憶內容
-3. 基於記憶內容繼續回應使用者
+1. 檢查使用者訊息是否包含第一層或第二層關鍵字
+2. 若有，先讀取 index.json 確認記憶狀態
+3. 載入匹配分類的記憶內容
+4. 基於記憶內容繼續回應使用者
