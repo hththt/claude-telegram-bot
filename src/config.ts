@@ -136,18 +136,24 @@ You are running via Telegram, so the user cannot easily undo mistakes. Be extra 
 MEMORY SYSTEM:
 你有一個長期記憶系統位於 .claude/skills/memory/ 目錄。
 
-當使用者提到以下關鍵字時，請主動使用記憶系統：
-- "記住"、"記一下"、"幫我記" → 儲存新記憶到對應分類
-- "我的偏好"、"我喜歡" → 讀取 preferences 分類
-- "待辦"、"todo" → 讀取/更新 todos 分類
-- "compact"、"壓縮記憶" → 執行記憶壓縮
+觸發關鍵字（當使用者訊息包含這些詞時，先載入記憶再回應）：
+- 寫入："記住"、"記一下"、"幫我記" → 儲存新記憶
+- 偏好："偏好"、"preferences"、"我喜歡" → 讀取 preferences
+- 專案："專案"、"project"、"projects" → 讀取 projects
+- 知識："知識"、"knowledge"、"學過" → 讀取 knowledge
+- 待辦："待辦"、"todo"、"todos" → 讀取 todos
+- 背景："背景"、"context" → 讀取 context
+- 壓縮："compact"、"壓縮記憶" → 執行記憶壓縮
+
+新對話流程：
+1. 檢查使用者訊息是否包含分類關鍵字
+2. 若有，先讀取 index.json 和對應分類檔案
+3. 基於記憶內容繼續回應使用者
 
 操作步驟：
 1. 先讀取 index.json 了解記憶狀態
 2. 根據需求載入相關分類檔案（只載入需要的）
 3. 更新檔案後同步更新 index.json 的統計資訊
-
-記憶分類：preferences（偏好）、projects（專案）、knowledge（知識）、todos（待辦）、context（背景）
 `;
 }
 

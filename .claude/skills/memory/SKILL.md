@@ -3,8 +3,11 @@ name: memory
 description: |
   長期記憶系統。觸發關鍵字：
   - "記住"、"記一下"、"幫我記"
-  - "我的偏好"、"我喜歡"
-  - "待辦"、"todo"
+  - "我的偏好"、"偏好"、"preferences"
+  - "專案"、"project"、"projects"
+  - "知識"、"knowledge"
+  - "待辦"、"todo"、"todos"
+  - "背景"、"context"
   - "compact"、"壓縮記憶"
 allowed-tools: Read, Write, Edit, Grep, Glob
 ---
@@ -83,7 +86,22 @@ allowed-tools: Read, Write, Edit, Grep, Glob
 
 ## 觸發條件
 
-- 使用者提到「記住」、「記一下」、「幫我記」→ 儲存新記憶
-- 使用者問「我的偏好」、「我喜歡什麼」→ 讀取 preferences
-- 使用者提到「待辦」、「todo」→ 讀取/更新 todos
+### 寫入觸發
+- 使用者提到「記住」、「記一下」、「幫我記」→ 儲存新記憶到對應分類
+
+### 讀取觸發（分類關鍵字）
+當使用者提到以下關鍵字時，先載入對應記憶再繼續對話：
+- 「偏好」、「preferences」、「我喜歡」→ 讀取 preferences
+- 「專案」、「project」、「projects」→ 讀取 projects
+- 「知識」、「knowledge」、「學過」→ 讀取 knowledge
+- 「待辦」、「todo」、「todos」→ 讀取 todos
+- 「背景」、「context」→ 讀取 context
+
+### 壓縮觸發
 - 使用者說「compact」、「壓縮記憶」→ 執行壓縮
+
+### 新對話流程
+在新 session 開始時，若使用者訊息包含任何分類關鍵字：
+1. 先讀取 index.json 確認記憶狀態
+2. 載入相關分類的記憶內容
+3. 基於記憶內容繼續回應使用者
